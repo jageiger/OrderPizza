@@ -1,0 +1,33 @@
+<%= form_for(@applied_label) do |f| %>
+  <% if @applied_label.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@applied_label.errors.count, "error") %> prohibited this applied_label from being saved:</h2>
+
+      <ul>
+      <% @applied_label.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :item_id %><br>
+    <%= f.select :item_id, options_from_collection_for_select(@items, "id", "name", @applied_label.item_id), {}, class: "form-control", :prompt => "Select item" %>
+  </div>
+  <div class="field">
+    <%= f.label :label_id %><br>
+    <%= f.select :label_id, options_from_collection_for_select(@labels, "id", "name", @applied_label.label_id), {}, class: "form-control", :prompt => "Select label" %>
+  </div>
+  <div class="field">
+    <%= f.label :daily_special %><br>
+    <%= f.check_box :daily_special %>
+  </div>
+  <div class="field">
+    <%= f.label :day %><br>
+    <%= f.select :day, options_for_select([["None","0"],["Sunday", "1"], ["Monday", "2"], ["Tuesday","3"],["Wednesday","4"],["Thursday","5"],["Friday","6"],["Saturday","7"]],@applied_label.day), {}, {:class => "form-control"} %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

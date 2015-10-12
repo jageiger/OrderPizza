@@ -1,0 +1,27 @@
+<h1>Listing grouped_modifiers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Modifier group</th>
+      <th>Modifier</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @grouped_modifiers.each do |grouped_modifier| %>
+      <tr>
+        <td><%= grouped_modifier.modifier_group_id %></td>
+        <td><%= grouped_modifier.modifier_id %></td>
+        <td><%= link_to 'Show', grouped_modifier %></td>
+        <td><%= link_to 'Edit', edit_grouped_modifier_path(grouped_modifier) %></td>
+        <td><%= link_to 'Destroy', grouped_modifier, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Grouped modifier', new_grouped_modifier_path %>

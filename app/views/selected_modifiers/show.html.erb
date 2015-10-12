@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @selected_modifier.item_id %>
+</p>
+
+<p>
+  <strong>Cart item:</strong>
+  <%= @selected_modifier.cart_item_id %>
+</p>
+
+<p>
+  <strong>Modifier:</strong>
+  <%= @selected_modifier.modifier_id %>
+</p>
+
+<%= link_to 'Edit', edit_selected_modifier_path(@selected_modifier) %> |
+<%= link_to 'Back', selected_modifiers_path %>

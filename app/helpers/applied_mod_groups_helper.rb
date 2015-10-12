@@ -1,0 +1,2 @@
+module AppliedModGroupsHelper
+end

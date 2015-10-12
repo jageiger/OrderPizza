@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  item_id: 1
+  label_id: 1
+  daily_special: false
+  day: 1
+
+two:
+  item_id: 1
+  label_id: 1
+  daily_special: false
+  day: 1

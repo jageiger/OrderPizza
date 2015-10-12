@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @selected_address.address_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @selected_address.user_id %>
+</p>
+
+<p>
+  <strong>Order:</strong>
+  <%= @selected_address.order_id %>
+</p>
+
+<%= link_to 'Edit', edit_selected_address_path(@selected_address) %> |
+<%= link_to 'Back', selected_addresses_path %>

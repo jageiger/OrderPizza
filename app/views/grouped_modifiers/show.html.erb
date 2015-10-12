@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Modifier group:</strong>
+  <%= @grouped_modifier.modifier_group_id %>
+</p>
+
+<p>
+  <strong>Modifier:</strong>
+  <%= @grouped_modifier.modifier_id %>
+</p>
+
+<%= link_to 'Edit', edit_grouped_modifier_path(@grouped_modifier) %> |
+<%= link_to 'Back', grouped_modifiers_path %>

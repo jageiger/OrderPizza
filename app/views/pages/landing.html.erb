@@ -1,0 +1,35 @@
+<h1 style="color:green">Admin's Page of Awesomeness</h1>
+
+<%= link_to 'Addresses', addresses_path %> - USER
+<br>
+<%= link_to 'Applied Labels', applied_labels_path %> - ADMIN, views not needed, as it is a join
+<br>
+<%= link_to 'Applied Mod Groups', applied_mod_groups_path %> - ADMIN
+<br>
+<%= link_to 'Cart Items', cart_items_path %> - USER
+<br>
+<%= link_to 'Categories', categories_path %> - ADMIN
+<br>
+<%= link_to 'Categorizations', categorizations_path %> - ADMIN, views not needed, as it is a join
+<br>
+<%= link_to 'Grouped Modifiers', grouped_modifiers_path %> - ADMIN, views not needed, as it is a join
+<br>
+<%= link_to 'Items', items_path %> - ADMIN. USER? I need to think about where the user will pick items before they end up cart_items. It's also going to have to display the DAILY SPECIAL crap.
+<br>
+<%= link_to 'Labels', labels_path %> - ADMIN
+<br>
+<%= link_to 'Modifier Groups', modifier_groups_path %> - ADMIN
+<br>
+<%= link_to 'Modifiers', modifiers_path %> - ADMIN
+<br>
+<%= link_to 'Orders', orders_path %> - ADMIN and USER. User, going to be past orders... So they can re-order. Admin, see all orders... 
+<br>
+<%= link_to 'Selected Addresses', selected_addresses_path %> - USER, views not needed, as it is a join. It will be displayed to the user. They might even have the option to change the address after the order has been paid for? IDK... They can pick from their addresses...
+<br>
+<%= link_to 'Selected Modifiers', selected_modifiers_path %> - USER, views not needed, as it is a join.
+<br>
+<%= link_to 'Taxes', taxes_path %> - ADMIN
+<br>
+<br>
+<%#= link_to 'Users', users_path %>
+<%= link_to 'Menu', pages_menu_path %> - ADMIN

@@ -1,0 +1,29 @@
+<%= form_for(@selected_modifier) do |f| %>
+  <% if @selected_modifier.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@selected_modifier.errors.count, "error") %> prohibited this selected_modifier from being saved:</h2>
+
+      <ul>
+      <% @selected_modifier.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :item_id %><br>
+    <%= f.number_field :item_id %>
+  </div>
+  <div class="field">
+    <%= f.label :cart_item_id %><br>
+    <%= f.number_field :cart_item_id %>
+  </div>
+  <div class="field">
+    <%= f.label :modifier_id %><br>
+    <%= f.number_field :modifier_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

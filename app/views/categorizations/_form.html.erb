@@ -1,0 +1,25 @@
+<%= form_for(@categorization) do |f| %>
+  <% if @categorization.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@categorization.errors.count, "error") %> prohibited this categorization from being saved:</h2>
+
+      <ul>
+      <% @categorization.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :category_id %><br>
+    <%= f.select :category_id, options_from_collection_for_select(@categories, "id", "name", @categorization.category_id), {}, class: "form-control", :prompt => "Select category" %>
+  </div>
+  <div class="field">
+    <%= f.label :item_id %><br>
+    <%= f.select :item_id, options_from_collection_for_select(@items, "id", "name", @categorization.item_id), {}, class: "form-control", :prompt => "Select item" %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

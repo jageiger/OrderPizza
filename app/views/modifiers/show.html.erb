@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @modifier.name %>
+</p>
+
+<p>
+  <strong>Alt name:</strong>
+  <%= @modifier.alt_name %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @modifier.price %>
+</p>
+
+<p>
+  <strong>Use extras:</strong>
+  <%= @modifier.use_extras %>
+</p>
+
+<%= link_to 'Edit', edit_modifier_path(@modifier) %> |
+<%= link_to 'Back', modifiers_path %>

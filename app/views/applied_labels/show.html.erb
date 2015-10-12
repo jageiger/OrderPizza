@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @applied_label.item_id %>
+</p>
+
+<p>
+  <strong>Label:</strong>
+  <%= @applied_label.label_id %>
+</p>
+
+<p>
+  <strong>Daily special:</strong>
+  <%= @applied_label.daily_special %>
+</p>
+
+<p>
+  <strong>Day:</strong>
+  <%= @applied_label.day %>
+</p>
+
+<%= link_to 'Edit', edit_applied_label_path(@applied_label) %> |
+<%= link_to 'Back', applied_labels_path %>

@@ -1,0 +1,25 @@
+<%= form_for(@grouped_modifier) do |f| %>
+  <% if @grouped_modifier.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@grouped_modifier.errors.count, "error") %> prohibited this grouped_modifier from being saved:</h2>
+
+      <ul>
+      <% @grouped_modifier.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :modifier_group_id %><br>
+    <%= f.select :modifier_group_id, options_from_collection_for_select(@modifier_groups, "id", "name", @grouped_modifier.modifier_group_id), {}, class: "form-control", :prompt => "Select modifier group" %>
+  </div>
+  <div class="field">
+    <%= f.label :modifier_id %><br>
+    <%= f.select :modifier_id, options_from_collection_for_select(@modifiers, "id", "name", @grouped_modifier.modifier_id), {}, class: "form-control", :prompt => "Select modifier" %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

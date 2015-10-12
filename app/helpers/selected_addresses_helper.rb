@@ -1,0 +1,2 @@
+module SelectedAddressesHelper
+end

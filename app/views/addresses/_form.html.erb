@@ -1,0 +1,61 @@
+<%= form_for(@address) do |f| %>
+  <% if @address.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@address.errors.count, "error") %> prohibited this address from being saved:</h2>
+
+      <ul>
+      <% @address.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %><br>
+    <%= f.number_field :user_id %>
+  </div>
+  <div class="field">
+    <%= f.label :address_one %><br>
+    <%= f.text_field :address_one %>
+  </div>
+  <div class="field">
+    <%= f.label :address_two %><br>
+    <%= f.text_field :address_two %>
+  </div>
+  <div class="field">
+    <%= f.label :address_three %><br>
+    <%= f.text_field :address_three %>
+  </div>
+  <div class="field">
+    <%= f.label :address_four %><br>
+    <%= f.text_field :address_four %>
+  </div>
+  <div class="field">
+    <%= f.label :zipcode %><br>
+    <%= f.text_field :zipcode %>
+  </div>
+  <div class="field">
+    <%= f.label :apartment %><br>
+    <%= f.check_box :apartment %>
+  </div>
+  <div class="field">
+    <%= f.label :apartment_number %><br>
+    <%= f.text_field :apartment_number %>
+  </div>
+  <div class="field">
+    <%= f.label :building_number %><br>
+    <%= f.text_field :building_number %>
+  </div>
+  <div class="field">
+    <%= f.label :gate_code %><br>
+    <%= f.text_field :gate_code %>
+  </div>
+  <div class="field">
+    <%= f.label :special_instructions %><br>
+    <%= f.text_area :special_instructions %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,8 @@
+<% @categories.each do |category| %>
+	<%= category.name %>
+	<% catz = Categorization.all.select { |t| t.category_id == category.id } %>
+	<% catz.each do |cat| %>
+		  <% item = Item.find(cat.item_id) %>
+		- <%= item.name %>
+	<% end %>
+<% end %>

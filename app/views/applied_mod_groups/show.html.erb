@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Modifier group:</strong>
+  <%= @applied_mod_group.modifier_group_id %>
+</p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @applied_mod_group.item_id %>
+</p>
+
+<%= link_to 'Edit', edit_applied_mod_group_path(@applied_mod_group) %> |
+<%= link_to 'Back', applied_mod_groups_path %>
