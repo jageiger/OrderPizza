@@ -1,0 +1,13 @@
+// First set or import your overrides
+$textColor: #000;
+
+@import "bootstrap-sprockets";
+@import "bootswatch/sandstone/variables";
+@import "bootstrap";
+
+// Bootstrap body padding for fixed navbar
+body { padding-top: 30px; }
+
+@import "bootswatch/sandstone/bootswatch";
+@import "base";
+

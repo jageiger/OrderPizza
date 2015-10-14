@@ -2,7 +2,8 @@ source 'https://rubygems.org'
 
 gem 'devise'
 
-gem 'bootstrap-sass-rails'
+gem 'bootstrap-sass', '~> 3.3.5'
+gem 'bootswatch-rails'
 gem 'foundation-rails'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
