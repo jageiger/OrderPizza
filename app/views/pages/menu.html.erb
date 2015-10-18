@@ -1,8 +1,107 @@
-<% @categories.each do |category| %>
-	<%= category.name %>
-	<% catz = Categorization.all.select { |t| t.category_id == category.id } %>
-	<% catz.each do |cat| %>
-		  <% item = Item.find(cat.item_id) %>
-		- <%= item.name %>
-	<% end %>
-<% end %>
+<div class="tabbable tabbable-custom">
+	<ul class="nav nav-tabs">
+		<% first = true %>
+		<% @categories.each do |category| %>
+
+			<% catz = Categorization.all.select { |t| t.category_id == category.id } %>
+			<% if first %>
+				<li class="active">
+			<% else %>
+					<li>
+			<% end %>
+						<a href="#tab_<%= category.id %>" data-toggle="tab"> <%= category.name %></a>
+					</li>
+			<% first = false %>
+		<% end %>
+	</ul>
+	
+	<div class="tab-content" style="margin-top:10px;">
+		
+		<% first = true %>
+		<% @categories.each do |category| %>
+
+			<% catz = Categorization.all.select { |t| t.category_id == category.id } %>
+			<% count = catz.count %>
+			<% adjustment = 0 %>
+			<% if first %>
+				<div class="tab-pane active" id="tab_<%= category.id %>">
+			<% else %>
+				<div class="tab-pane" id="tab_<%= category.id %>">
+			<% end %>
+					<div class="row">
+						<%# Count catz to see how many panels to render... some categories might not have many items and I want to fill the space on larger displays. Store in variable, and calculate which col# for xs, sm, md, and lg. Possibly use remainders to see the best way to fill the space... I don't want any gaps. T %>
+					<% catz.each_with_index do |cat, i| %>
+						<% item = Item.find(cat.item_id) %>
+						
+						<% if count == 1 # full width %>
+						<% elsif count == 2 # half and half %>
+						<% elsif count == 3 # thirds %>
+						<% elsif count == 4 # fourths %>
+						<% elsif count == 5 # prime and greater than 3. have to do 2 and three? %>
+						<% elsif count == 6 # two rows of threes. %>
+						<% elsif count == 7 # prime. argh. 3 and four %>
+						<% elsif count == 8 # two fours %>
+						<% elsif count == 9 # three threes %>
+						<% elsif count == 10 # could reuse 5 logic or do 4-4-2 %>
+						<% elsif count == 11 # novel logic (if not used for 10)... 4-4-3 %>
+						<% elsif count == 12 # max is 4, so good. %>
+						<% end %>
+						
+						<% if count%2 != 0 && count%3 != 0 && count%4 != 0 %>
+							<%# I'll draw one extra panel. Every number is one number away from one that can work. The extra panel will be an offer or advertisement, or fancy picture. %>
+							<% adjustment = 1 %>
+						<% end %>
+						
+						<% remainderA = count%3 %>
+						<% remainderB = count%4 %>
+						
+						<% if count == 1%>
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<% elsif count == 2 %>
+						<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+						<% elsif count == 3 || remainderA == 0 || (remainderA > remainderB && remainderB !=0) %>
+						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+						<%# elsif count == 4 || remainderA == 0 || (remainderB > remainderA && remainderA !=0) %>
+						<% else %>
+						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+						<% end %>
+						
+						
+						<%# if two things , 12 / 2 ... but more than four things? ... Need to catch all that aren't divisible by 2,3,4 %>
+						
+						<%# if count <= 4 || count%4 == 0 %>
+						<!--  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-<% 12 / count %>"> -->
+						<%# else %>
+						<!-- <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"> -->
+						<%# end %>
+						
+							<div class="panel panel-default">
+							  <div class="panel-heading">
+							    <h3 class="panel-title"><%= item.name %></h3>
+							  </div>
+							  <div class="panel-body">
+							    <%= item.description %>
+								<%# Descriptions need to be the same amount of characters, and if not, need to be normalized with character counts or somethin' %>
+							  </div>
+							</div>
+						</div>
+					<% end %>
+					<% if adjustment == -1 # I have to think about how I might work in 'Advertisements' %>
+						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+							<div class="panel panel-default">
+							  <div class="panel-heading">
+							    <h3 class="panel-title">Advertisement</h3>
+							  </div>
+							  <div class="panel-body">
+							    Hey, spend more money with us.
+								<%# Descriptions need to be the same amount of characters, and if not, need to be normalized with character counts or somethin' %>
+							  </div>
+							</div>
+						</div>
+					<% end %>
+				</div>
+			</div>
+			<% first = false %>
+		<% end %>
+	</div>
+</div>

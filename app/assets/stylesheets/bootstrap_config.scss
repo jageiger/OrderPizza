@@ -2,12 +2,13 @@
 $textColor: #000;
 
 @import "bootstrap-sprockets";
-@import "bootswatch/sandstone/variables";
+// was using sandstone, trying cyborg
+@import "bootswatch/cyborg/variables";
 @import "bootstrap";
 
 // Bootstrap body padding for fixed navbar
 body { padding-top: 30px; }
 
-@import "bootswatch/sandstone/bootswatch";
+@import "bootswatch/cyborg/bootswatch";
 @import "base";
 
