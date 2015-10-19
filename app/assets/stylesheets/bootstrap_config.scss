@@ -3,12 +3,13 @@ $textColor: #000;
 
 @import "bootstrap-sprockets";
 // was using sandstone, trying cyborg
-@import "bootswatch/cyborg/variables";
+@import "bootswatch/sandstone/variables";
 @import "bootstrap";
 
 // Bootstrap body padding for fixed navbar
-body { padding-top: 30px; }
+body { padding-top: 34px; }
+//Going to need different paddings for different screen sizes. Same applies to line-heights in the base.css
 
-@import "bootswatch/cyborg/bootswatch";
+@import "bootswatch/sandstone/bootswatch";
 @import "base";
 
