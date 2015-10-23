@@ -18,6 +18,7 @@
 	<div class="tab-content" style="margin-top:10px;">
 		
 		<% first = true %>
+		<% next_hue = 0 %>
 		<% @categories.each do |category| %>
 
 			<% catz = Categorization.all.select { |t| t.category_id == category.id } %>
@@ -75,8 +76,68 @@
 						<!-- <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"> -->
 						<%# end %>
 						
-							<div class="panel panel-default">
-							  <div class="panel-heading">
+						<% if (i+1)%6==0 %>
+							<% panel = "panel-info" %>
+							<% panelStyle = "border-color: #bce8f1;" %>
+							<% panelHeading = "color: #29abe0; background-color: #29abe0; border-color: #bce8f1;" %>
+						<% elsif (i+1)%5==0 %>
+							<% panel = "panel-danger" %>
+							<% panelStyle = "border-color: #ebccd1;" %>
+							<% panelHeading = "color: #d9534f; background-color: #d9534f; border-color: #ebccd1;" %>
+						<% elsif (i+1)%4==0 %>
+							<% panel = "panel-warning" %>
+							<% panelStyle = "border-color: #faebcc;" %>
+							<% panelHeading = "color: #f47c3c; background-color: #f47c3c; border-color: #faebcc;" %>
+						<% elsif (i+1)%3==0 %>
+							<% panel = "panel-success" %>
+							<% panelStyle = "border-color: #d6e9c6;" %>
+							<% panelHeading = "color: #93c54b; background-color: #93c54b; border-color: #d6e9c6;" %>
+						<% elsif (i+1)%2==0 %>
+							<% panel = "panel-primary" %>
+							<% panelStyle = "border-color: #325d88;" %>
+							<% panelHeading = "color: #ffffff; background-color: #325d88; border-color: #325d88;" %>
+						<% else %>
+							<% panel = "panel-default" %>
+							<%# panelStyle = "border-color: #325d88;" %>
+							<%# panelHeading = "color: #ffffff; background-color: #325d88; border-color: #325d88;" %>
+						<% end %>
+						
+						<%# hue = get_hue(next_hue) %>
+						<%# puts "=-=-=-=-=" + hue.to_s + "=-=-=-=-=" %>
+						<% next_hue = next_hue + 1 %>
+						<%# degrees = (hue * 360).round %>
+						
+						<% puts "hay: "+ binaryTwo(23).to_s %>
+						<% puts "What? " + 3.to_s(2) %>
+						<% puts "What? " + 4.to_s(2) %>
+						<% string = next_hue.to_s(2) %>
+						<% puts "string = "+string %>
+						<% if string.length < 32 %>
+							<% num = 32 - string.length %>
+							<% newString = "" %>
+							<% for i in 1..num do %>
+								<% newString += "0" %>
+							<% end %>
+							<% newString += string %>
+							<% puts "NewString = " + newString %>
+							<% string = newString %>
+						<% end %>
+						<% num = reverse(string).to_i(2) %>
+						<% puts num.to_s %>
+						<% numF = num.to_f / (2**32) %>
+						<% puts "numF = " + numF.to_s %>
+						<% hue = ((numF + 0.6) % 1) %>
+						<% puts ((numF + 0.6) % 1).to_s %>
+						<% degrees = (hue * 360).round %>
+
+				
+						<%# puts "...? " + to_binary32(3).to_s %>
+						
+						<% panelHeading = "background-color: hsl(" + degrees.to_s + ", 100%, 65%);" %>
+
+
+							<div class="panel <%= panel %>" style="<%= panelStyle %>" >
+							  <div class="panel-heading" style="<%= panelHeading %>" >
 							    <h3 class="panel-title"><%= item.name %></h3>
 							  </div>
 							  <div class="panel-body">

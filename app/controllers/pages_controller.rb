@@ -8,6 +8,7 @@ class PagesController < ApplicationController
   
   def menu
     @categories = Category.all
+    @next_hue = 0
   end
   
 end
