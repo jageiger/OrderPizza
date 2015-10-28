@@ -17,6 +17,8 @@ class CartItemsController < ApplicationController
   def new
     @item = Item.find(params[:item])
     @cart_item = CartItem.new
+    @cart_item.order = @order
+    @cart_item.user = current_user
   end
 
   # GET /cart_items/1/edit
@@ -75,13 +77,16 @@ class CartItemsController < ApplicationController
     end
     
     def set_order
-      if (Order.all.select{|t| t.user == current_user}.nil? || Order.all.select{|t| t.user == current_user && t.open == true }.nil?)
-        #create a new order if none exist for current user // or create a new order if the user has an order, but it isn't open
+      @orders = Order.all.select{|t| t.user == current_user}.sort_by &:created_at
+      @user = current_user
+      if @orders.empty?
         @order = Order.new
-        @order.user = current_user
-      elsif Order.all.select{|t| t.user == current_user && t.open == true }.nil?
-
-        #consider adding an open_order_id attribute to the user, to keep track of which order is currently open.  
+        @order.user = @user
+        @order.save
+        @user.open_order = @order.id
+        @user.save
+      else
+        @order = Order.find(current_user.open_order)
       end
     end
 

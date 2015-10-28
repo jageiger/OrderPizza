@@ -83,8 +83,5 @@ class OrdersController < ApplicationController
       @user = @order.user
       @user.open_order = @order.id
       @user.save
-      puts "*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
-      puts @user.open_order
-      puts @order.id
     end
 end
