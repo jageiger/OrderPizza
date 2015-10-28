@@ -1,5 +1,6 @@
 class CartItemsController < ApplicationController
   before_action :set_cart_item, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: [:new]
 
   # GET /cart_items
   # GET /cart_items.json
@@ -14,6 +15,7 @@ class CartItemsController < ApplicationController
 
   # GET /cart_items/new
   def new
+    @item = Item.find(params[:item])
     @cart_item = CartItem.new
   end
 
@@ -71,4 +73,16 @@ class CartItemsController < ApplicationController
     def cart_item_params
       params.require(:cart_item).permit(:user_id, :order_id, :item_id, :price, :quantity, :special_instructions)
     end
+    
+    def set_order
+      if (Order.all.select{|t| t.user == current_user}.nil? || Order.all.select{|t| t.user == current_user && t.open == true }.nil?)
+        #create a new order if none exist for current user // or create a new order if the user has an order, but it isn't open
+        @order = Order.new
+        @order.user = current_user
+      elsif Order.all.select{|t| t.user == current_user && t.open == true }.nil?
+
+        #consider adding an open_order_id attribute to the user, to keep track of which order is currently open.  
+      end
+    end
+
 end

@@ -1,5 +1,6 @@
 class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :edit, :update, :destroy]
+  after_filter :set_open_order, only: [:create]
 
   # GET /orders
   # GET /orders.json
@@ -14,7 +15,13 @@ class OrdersController < ApplicationController
 
   # GET /orders/new
   def new
-    @order = Order.new
+    @orders = Order.all.select{|t| t.user == current_user}.sort_by &:created_at
+    if @orders.empty?
+      @order = Order.new
+      @order.user = current_user
+    else
+      redirect_to order_path(Order.find(current_user.open_order))
+    end
   end
 
   # GET /orders/1/edit
@@ -70,5 +77,14 @@ class OrdersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
       params.require(:order).permit(:user_id)
+    end
+    
+    def set_open_order
+      @user = @order.user
+      @user.open_order = @order.id
+      @user.save
+      puts "*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+      puts @user.open_order
+      puts @order.id
     end
 end
