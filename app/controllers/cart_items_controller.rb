@@ -1,6 +1,6 @@
 class CartItemsController < ApplicationController
   before_action :set_cart_item, only: [:show, :edit, :update, :destroy]
-  before_action :set_order, only: [:new]
+  before_action :set_order, only: [:new, :add_to_cart]
 
   # GET /cart_items
   # GET /cart_items.json
@@ -8,17 +8,25 @@ class CartItemsController < ApplicationController
     @cart_items = CartItem.all
   end
   
+  def cart
+    @cart_items = CartItem.all
+  end
+  
   def add_to_cart
+    puts "Hey, this is printed"
     @item = Item.find(params[:item])
     @cart_item = CartItem.new
     @cart_item.order = @order
     @cart_item.user = current_user
     @cart_item.item = @item
+    @cart_item.save
+    redirect_to edit_cart_item_path(@cart_item)
   end
 
   # GET /cart_items/1
   # GET /cart_items/1.json
   def show
+    @item = Item.find(@cart_item.item_id)
   end
 
   # GET /cart_items/new
@@ -33,6 +41,7 @@ class CartItemsController < ApplicationController
   # GET /cart_items/1/edit
   def edit
     # This method needs work. It's reusing some code and is missing definitions.
+    @item = Item.find(@cart_item.item_id)
   end
 
   # POST /cart_items

@@ -92,7 +92,7 @@
 								<%# Descriptions need to be the same amount of characters, and if not, need to be normalized with character counts or somethin' %>
 								<br>
 								<div class="add-button">
-								<%= link_to "Add To Cart", new_cart_item_path(:item => item.id), class: "btn btn-primary btn-xs btn-block", style: "" %>
+								<%= link_to "Add To Cart", cart_items_cart_path(:item => item.id), method: :post, class: "btn btn-primary btn-xs btn-block", style: "" %>
 								</div>
 							  </div>
 							</div>

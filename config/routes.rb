@@ -21,7 +21,11 @@ Rails.application.routes.draw do
 
   resources :items
 
-  resources :cart_items
+  resources :cart_items do
+    collection do
+      get :cart
+    end
+  end
 
   resources :selected_addresses
 
@@ -36,6 +40,9 @@ Rails.application.routes.draw do
   get "pages/menu"
   get "pages/landing"
 
+  # get "cart_items/add_to_cart"
+  post 'cart_items/cart' => 'cart_items#add_to_cart'
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
