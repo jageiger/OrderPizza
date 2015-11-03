@@ -7,6 +7,14 @@ class CartItemsController < ApplicationController
   def index
     @cart_items = CartItem.all
   end
+  
+  def add_to_cart
+    @item = Item.find(params[:item])
+    @cart_item = CartItem.new
+    @cart_item.order = @order
+    @cart_item.user = current_user
+    @cart_item.item = @item
+  end
 
   # GET /cart_items/1
   # GET /cart_items/1.json
@@ -19,10 +27,12 @@ class CartItemsController < ApplicationController
     @cart_item = CartItem.new
     @cart_item.order = @order
     @cart_item.user = current_user
+     @cart_item.item = @item
   end
 
   # GET /cart_items/1/edit
   def edit
+    # This method needs work. It's reusing some code and is missing definitions.
   end
 
   # POST /cart_items

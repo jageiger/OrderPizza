@@ -1,4 +1,4 @@
-<% if current_user.try(:admin?) %>
+<% unless current_user.try(:admin?) %>
 
 
 	<h1 style="color:green">Admin's Page of Awesomeness</h1>
