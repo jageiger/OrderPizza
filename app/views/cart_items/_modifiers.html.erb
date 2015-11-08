@@ -1,7 +1,9 @@
 <div id="selected_modifiers">
-refreshed
-<br>
 <% @ca = s_mod %>
-<%= @ca.cart_item_id %>
-<% puts "+-=-=-=+" + @ca.inspect %>
+<% @ca.cart_item_id %>
+<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id = @ca.cart_item_id }%>
+<% selected_mods.each do |selected_modifier| %>
+	<% modifier = Modifier.find(selected_modifier.modifier_id) %>
+	<%= modifier.name %><br>
+<% end %>
 </div>

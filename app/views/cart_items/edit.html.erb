@@ -3,7 +3,15 @@
 	<p><%= @item.description %></p>
 	
 	<% c_item = @cart_item %>
-	<%= render 'mods' %>
+
+	<div id="selected_modifiers">
+
+	<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id = @cart_item.id }%>
+	<% selected_mods.each do |selected_modifier| %>
+		<% modifier = Modifier.find(selected_modifier.modifier_id) %>
+		<%= modifier.name %><br>
+	<% end %>
+	</div>
 	
 	
 	<br>
@@ -29,6 +37,7 @@
 	<% selected_mod = SelectedModifier.new %>
 	<%= form_for(selected_mod, :remote => true, :html=>{:id=>'price_form', :style=>'' } ) do |g| %>
 	  	<%= modifier_group.name %><br>
+	<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
 	
 	<%# I could have, instead of the way I WAS doing it, display a collection of modifiers... That would totally work, bro. That would totally work. Like this below one I made before: %>
 	<%#= f.select :period, options_for_select([["One Day", 1], ["One Week", 7],["Two Weeks", 14], ["One Month", 30], ["Six Months", 180]], @join.period), {}, onchange: "$('#price_form').submit();", class: "form-control" %>
