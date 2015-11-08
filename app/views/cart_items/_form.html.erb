@@ -55,26 +55,7 @@
     		</div>
   		<% end %>
 
-		<p><%= @item.description %></p>
-		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id }%>
-		<% options.each do |applied_mod_group| %>
-			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
-			<% modifier_groups.each do |modifier_group| %>
-				<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id = modifier_group.id }%>
-				<% grouped_modifiers.each do |grouped_modifer| %>
-					<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
-					
-					<%= modifier.name %><br>
-					<%# if click, then AJAX a form request for a new 'selected' modifier, as well as update CSS? Uh-oh. There's the definite problem of using this form for a item that doesn't exist... How can I give it a cart_item, when the record of the cart_item isn't yet saved? It looks like I will HAVE to save the item before I can apply modifiers. Perhaps I can discreetly save it? So, when they click "Add to Cart", it creates it and saves it, and then redirects to the edit page. The submit button for this form instead says "Update Item"... Well, actually, the user doesn't see a form for the new method, right? It takes them to the edit, which has a cart_item id, so I do the rest as AJAX requests. %>
-				<% end%>
-			
-				<%# modifiers = Modifier.all.select{ |t| t.}%>
-			
-			<% end %>
-			
-		
-		
-		<% end %>
+	
 		
 		<div class="form-group">
 			<%= f.hidden_field :item_id %>

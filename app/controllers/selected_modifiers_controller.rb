@@ -27,14 +27,8 @@ class SelectedModifiersController < ApplicationController
     @selected_modifier = SelectedModifier.new(selected_modifier_params)
 
     respond_to do |format|
-      if @selected_modifier.save
-        format.html { redirect_to @selected_modifier, notice: 'Selected modifier was successfully created.' }
-        format.json { render :show, status: :created, location: @selected_modifier }
-      else
-        format.html { render :new }
-        format.json { render json: @selected_modifier.errors, status: :unprocessable_entity }
+        format.js
       end
-    end
   end
 
   # PATCH/PUT /selected_modifiers/1
