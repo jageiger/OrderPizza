@@ -27,8 +27,12 @@ class SelectedModifiersController < ApplicationController
     @selected_modifier = SelectedModifier.new(selected_modifier_params)
 
     respond_to do |format|
+      if @selected_modifier.save
+        format.js
+      else
         format.js
       end
+    end
   end
 
   # PATCH/PUT /selected_modifiers/1
