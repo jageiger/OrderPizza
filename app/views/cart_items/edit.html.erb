@@ -6,7 +6,8 @@
 
 	<div id="selected_modifiers">
 
-	<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id = @cart_item.id }%>
+	<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
+	<%= @cart_item.id %>
 	<% selected_mods.each do |selected_modifier| %>
 		<% modifier = Modifier.find(selected_modifier.modifier_id) %>
 		<%= modifier.name %><br>
@@ -17,7 +18,7 @@
 	<br>
 	
 	
-	<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id }%>
+	<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
 	<% options.each do |applied_mod_group| %>
 		<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
 		<% modifier_groups.each do |modifier_group| %>
@@ -35,17 +36,20 @@
 	
 	<%# BEGIN OLD %>
 	<% selected_mod = SelectedModifier.new %>
-	<%= form_for(selected_mod, :remote => true, :html=>{:id=>'price_form', :style=>'' } ) do |g| %>
+	<% tempName = modifier_group.name.tr(' ', '_').camelize %>
+	<%= form_for(selected_mod, :remote => true, :html=>{:id=>"#{tempName}", :style=>"" }, validate: true) do |g| %>
 	  	<%= modifier_group.name %><br>
 	<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
 	
 	<%# I could have, instead of the way I WAS doing it, display a collection of modifiers... That would totally work, bro. That would totally work. Like this below one I made before: %>
 	<%#= f.select :period, options_for_select([["One Day", 1], ["One Week", 7],["Two Weeks", 14], ["One Month", 30], ["Six Months", 180]], @join.period), {}, onchange: "$('#price_form').submit();", class: "form-control" %>
-	<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), {}, onchange: "$('#price_form').submit();", class: "form-control" %>
+	<div id="<%= tempName %>Error"></div>
+	<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "Select #{modifier_group.name}" }, onchange: " if ( document.getElementsByName('selected_modifier[modifier_id]')[0].value=='' )
+	   { $('##{tempName}Error').html('<p>Please do not try to select the placeholder.</p>'); } else { $('##{tempName}').submit(); }", class: "form-control" %>
 			<%# selected_mod.cart_item = @cart_item %>
 			<%# selected_mod.modifier = modifier %>
 			<%# selected_mod.save %>
-			<% g.submit %>
+
 
 								<%#= f.select :period, options_for_select([["One Day", 1], ["One Week", 7],["Two Weeks", 14], ["One Month", 30], ["Six Months", 180]], @join.period), {}, onchange: "$('#price_form').submit();", class: "form-control" %>
 

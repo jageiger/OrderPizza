@@ -34,6 +34,7 @@
   <thead>
     <tr>
       <th>Item</th>
+	  <th colspan="2"></th>
     </tr>
   </thead>
 
@@ -44,6 +45,8 @@
 	    <% @cart_items.each do |item| %>
 	      <tr>
 	        <td><%= Item.find(item.item_id).name %></td>
+	        <td><%= link_to 'Edit', edit_cart_item_path(item) %></td>
+	        <td><%= link_to 'Destroy', item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
 	      </tr>
 	    <% end %>
 	  </tbody>
