@@ -1,1 +1,2 @@
 $("#selected_modifiers").html("<%= escape_javascript(render partial: "cart_items/modifiers", locals: { s_mod: @selected_modifier }).html_safe %>");
+$("#modifier_groups").html("<%= escape_javascript(render partial: "cart_items/groups", locals: { s_mod: @selected_modifier }).html_safe %>");
