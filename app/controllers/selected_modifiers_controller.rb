@@ -56,6 +56,7 @@ class SelectedModifiersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to selected_modifiers_url, notice: 'Selected modifier was successfully destroyed.' }
       format.json { head :no_content }
+      format.js   { render :layout => false }
     end
   end
 
