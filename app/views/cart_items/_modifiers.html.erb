@@ -1,8 +1,7 @@
-<div id="selected_modifiers">
 	<% @ca = s_mod %>
 	<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @ca.cart_item_id }%>
 	<% next_hue = 5 %>
-		<div class="row">
+		<div class="row" style="margin-bottom: -20px;">
 			<% count = selected_mods.count %>	
 			<% selected_mods.each_with_index do |sel, i| %>
 				<% mod = Modifier.find(sel.modifier_id) %>
@@ -44,5 +43,3 @@
 			<% end %>
 			
 		</div>
-</div>
-
