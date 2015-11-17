@@ -47,13 +47,13 @@
 	    <% @cart_items.each do |item| %>
 	      <tr class="header" id="item-<%= item.id %>" data-toggle-info="false" >
 		<td  width="75px"><%= form_for(item) do |f| %>
-			<%= f.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",nil]) %>
+			<%= f.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",nil]), { }, { :style => 'margin-top:6px;' } %>
 			<% end %>
 		</td>
 	        <td width=""><button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="toggleHide(this.value)" >
 			  <span id="item-<%= item.id %>-minus"><%= fa_icon "minus-circle" %></span><span style="display:none;" id="item-<%= item.id %>-plus"><%= fa_icon "plus-circle" %></span>
 			</button><b><span class="text-primary">   <%= Item.find(item.item_id).name %></span></b></td> <%# display modifiers? How to resolve ambiguity between items? Multiple rows, I suppose. That really seems to be the only way. It is going to be a rather complex layout. Each row (item row vs modifier row) needs to have different styles. Get rid of the hover. Get rid of the stripes. Option to remove modifiers from this page? [but no add, that'd be ridiculous!] %>
-	        <td width="200px">
+	        <td width="150px">
 	<div class="btn-group btn-group-justified">
 		<%= link_to 'Edit', edit_cart_item_path(item), class: "btn btn-info btn-xs btn-block" %>
 		<%= link_to 'Remove', item, method: :delete, data: { confirm: 'Are you sure you want to remove the item from your cart?' }, class: "btn btn-danger btn-xs btn-block" %>
