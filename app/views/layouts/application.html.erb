@@ -84,6 +84,15 @@
   </div>
 </div>
 
+<% if (current_page?(orders_path)) %>
+<script>
+
+function toggleHide(value) {
+  $("#"+value).nextUntil('tr.header').slideToggle(0);
+}
+
+</script>
+<% end %>
 
 </body>
 </html>
