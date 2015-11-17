@@ -36,7 +36,7 @@
 				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
 				<div id="<%= tempName %>Error"></div>
 				
-				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "Select #{modifier_group.name}" }, :id => "#{tempName}Select", onchange: " if ( $( '##{tempName}Select' ).val()=='' )
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "Select '#{modifier_group.name}'" }, :id => "#{tempName}Select", onchange: " if ( $( '##{tempName}Select' ).val()=='' )
 	   { $('##{tempName}Error').html('<p>Please do not try to select the placeholder.</p>'); } else { $('##{tempName}').submit(); $('##{tempName}Error').html(''); }", class: "form-control" %>
 	
 				<% else %>
