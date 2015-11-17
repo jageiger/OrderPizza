@@ -88,7 +88,20 @@
 <script>
 
 function toggleHide(value) {
-  $("#"+value).nextUntil('tr.header').slideToggle(0);
+  $("#"+value).nextUntil('tr.header').slideToggle(100);
+
+  if($("#"+value).data('toggle-info').toString() == 'false'){
+	$("#"+value+"-button").html("<i class='fa fa-plus-circle'></i>");
+	// $("#"+value+"-minus").hide();
+	// $("#"+value+"-minus").show();
+    $("#"+value).data("toggle-info","true");
+   
+  }
+
+  else{
+	$("#"+value+"-button").html("<i class='fa fa-minus-circle'></i>");
+	$("#"+value).data("toggle-info","false");
+  }
 }
 
 </script>
