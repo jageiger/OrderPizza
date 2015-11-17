@@ -32,7 +32,7 @@
 			<%= form_for(selected_mod, :remote => true, :html=>{:id=>"#{tempName}", :style=>"" }, validate: true) do |g| %>
 		     <div class="form-group">
 			  <% if(collection_of_mods.any?) %>
-	  			<%= modifier_group.name %><br>
+	  			<b><%= modifier_group.name %></b><br>
 				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
 				<div id="<%= tempName %>Error"></div>
 				
@@ -40,7 +40,7 @@
 	   { $('##{tempName}Error').html('<p>Please do not try to select the placeholder.</p>'); } else { $('##{tempName}').submit(); $('##{tempName}Error').html(''); }", class: "form-control" %>
 	
 				<% else %>
-				<%= modifier_group.name %><br>
+				<b><%= modifier_group.name %></b><br>
 				<div id="<%= tempName %>Error"></div>
 
 				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "All '#{modifier_group.name.pluralize}' selected." }, :id => "#{tempName}Select", :disabled => "disabled", onchange: " if ( $( '##{tempName}Select' ).val()=='' )
