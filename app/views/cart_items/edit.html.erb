@@ -75,15 +75,23 @@
 				<% next_hue = next_hue + 1 %>
 				<% string = next_hue.to_s(2) # 5, written out as 32bit %>
 				
-				<% unless selHue.blank? %>
-					<% selHue = selHue.to_i + 1 %>
-					<% sel.hue = selHue %>
+				<%# unless selHue.blank? %>
+				<% if sel.hue.blank? %>
+				  <% if i > 0 %>
+				    <% sel.hue = ((selected_mods[i-1].hue).to_i+1).to_s %>
+				  <% else %>
+				    <% sel.hue = 6 %>
+				  <% end %>
+				<% end %>
+				
+		
 					<% string = sel.hue.to_i.to_s(2) %>
-					<% else %>
+					
+					<%# else %>
 						<%# set hue to five... + 1 %>
-						<% selHue = 5 %>
-						<% string = sel.hue.to_i.to_s(2) %>
-					<% end %>
+						<%# selHue = 5 %>
+						<%# string = sel.hue.to_i.to_s(2) %>
+					<%# end %>
 					
 				<% if string.length < 32 %>
 					<% num = 32 - string.length %>
@@ -94,6 +102,7 @@
 					<% newString += string %>
 					<% string = newString %>
 				<% end %>
+				<% puts "string"+sel.hue.to_s+": "+string %>
 				<% num = reverse(string).to_i(2) %>
 				<% numF = num.to_f / (2**32) %>
 				
@@ -103,11 +112,14 @@
 				<% puts "blankblankblank" %>
 				
 				<% sel.color = degrees.to_s %>
-				<% sel.save %>
+
+				
 				<% end %>
+								<% sel.save %>
+				
 				<% panelStyle = "border-color: hsl(" + sel.color + ", 25%, 65%);" %>
 				<% panelHeading = "background-color: hsl(" + sel.color + ", 50%, 65%); border-color: hsl(" + sel.color + ", 25%, 65%);" %>
-						<div class="panel panel-info" style="<%= panelStyle %>" >
+						<div class="panel panel-info <%= sel.hue %>" style="<%= panelStyle %>" >
 					  		<div class="panel-heading" style="<%= panelHeading %>" >
 					    		<h3 class="panel-title"><%= mod.name %></h3>
 					  		</div>
