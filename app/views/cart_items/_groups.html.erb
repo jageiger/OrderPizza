@@ -1,0 +1,44 @@
+	<% @ca = s_mod %>
+	<% @cart_item = CartItem.find(@ca.cart_item_id) %>
+		
+	<% options = AppliedModGroup.all.select{ |t| t.item_id == Item.find(@cart_item.item_id).id } %>
+	<% puts options.to_s %>
+	<% options.each do |applied_mod_group| %>
+		<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
+		<% modifier_groups.each do |modifier_group| %>
+			<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.id }%>
+			<% collection_of_mods = [] %>
+			<% grouped_modifiers.each do |grouped_modifer| %>
+				<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
+				
+				<% unless(SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id }.any?) %>
+					<% collection_of_mods.push modifier %>
+				<% end %>
+				
+			<% end%>
+
+			<% selected_mod = SelectedModifier.new %>
+			<% tempName = modifier_group.name.tr(' ', '_').camelize %>
+			<%= form_for(selected_mod, :remote => true, :html=>{:id=>"#{tempName}", :style=>"" }, validate: true) do |g| %>
+		     <div class="form-group">
+			  <% if(collection_of_mods.any?) %>
+	  			<b><%= modifier_group.name %></b><br>
+				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<div id="<%= tempName %>Error"></div>
+				
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "Select '#{modifier_group.name}'" }, :id => "#{tempName}Select", onchange: " if ( $( '##{tempName}Select' ).val()=='' )
+	   { $('##{tempName}Error').html('<p>Please do not try to select the placeholder.</p>'); } else { $('##{tempName}').submit(); $('##{tempName}Error').html(''); }", class: "form-control" %>
+	
+				<% else %>
+				<b><%= modifier_group.name %></b><br>
+				<div id="<%= tempName %>Error"></div>
+
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "All '#{modifier_group.name.pluralize}' selected." }, :id => "#{tempName}Select", :disabled => "disabled", onchange: " if ( $( '##{tempName}Select' ).val()=='' )
+	   { $('##{tempName}Error').html('<p>Please do not try to select the placeholder.</p>'); } else { $('##{tempName}').submit(); $('##{tempName}Error').html(''); }", class: "form-control" %>
+
+				<% end %>
+			  </div>
+
+			<% end %>
+		<% end %>	
+	<% end %>

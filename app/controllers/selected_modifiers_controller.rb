@@ -25,14 +25,26 @@ class SelectedModifiersController < ApplicationController
   # POST /selected_modifiers.json
   def create
     @selected_modifier = SelectedModifier.new(selected_modifier_params)
-
-    respond_to do |format|
-      if @selected_modifier.save
-        format.js
-      else
-        format.js
+    
+    if(SelectedModifier.all.select{ |t| t.cart_item_id == @selected_modifier.cart_item_id && t.modifier_id == @selected_modifier.modifier_id }.any?)
+      #there is already an association, redirect, don't save!
+      
+      respond_to do |format|
+        format.html { redirect_to selected_modifiers_url, notice: 'The modifier is already created.' }
+        format.json { head :no_content }
+      end
+      
+    else
+      respond_to do |format|
+        if @selected_modifier.save
+          format.js
+        else
+          format.js
+        end
       end
     end
+
+
   end
 
   # PATCH/PUT /selected_modifiers/1
@@ -56,6 +68,7 @@ class SelectedModifiersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to selected_modifiers_url, notice: 'Selected modifier was successfully destroyed.' }
       format.json { head :no_content }
+      format.js   { render :layout => false }
     end
   end
 

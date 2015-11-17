@@ -37,8 +37,10 @@ Rails.application.routes.draw do
   
   root :to => 'pages#landing'
   
-  get "pages/menu"
+  get "pages/menu" # , as: :menu # example of fancy route... doesn't affect the url though
   get "pages/landing"
+  get "pages/select"
+  get "pages/payment" # going to want a POST for the API, right? ex: post 'miners/lease' => 'miners#btcpayment'
 
   # get "cart_items/add_to_cart"
   post 'cart_items/cart' => 'cart_items#add_to_cart'

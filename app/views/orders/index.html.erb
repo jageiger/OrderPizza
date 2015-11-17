@@ -29,24 +29,72 @@
 <% elsif user_signed_in? %>
 
 <h1>Order</h1>
+		<% @cart_items = CartItem.all.select{ |t| t.user_id == current_user.id && t.order_id == current_user.open_order }%>
+<% unless @cart_items.empty? %>
 
-<table>
+<table class="table">
   <thead>
     <tr>
-      <th>Item</th>
+      <th >Quantity</th>
+	  <th colspan="2">Item</th>
     </tr>
   </thead>
 
 	<tbody> <%# Actually, I will be displaying the cart items on the orders path. Confusing, I know. I can easily implement a "Past Orders" method, that will look like how the index typically looks, except I'll exclude any current, open orders from being displayed. No delete, edit, or anything like that as options. Can create a 'new' order from one of these old ones. It allows for reordering. But that's not even on this page. %>
 		<%# @orders = @orders.select{ |t| t.user_id == current_user.id && } %>
 		
-		<% @cart_items = CartItem.all.select{ |t| t.user_id == current_user.id && t.order_id == current_user.open_order }%>
+
 	    <% @cart_items.each do |item| %>
-	      <tr>
-	        <td><%= Item.find(item.item_id).name %></td>
+	      <tr class="header" id="item-<%= item.id %>" data-toggle-info="false" >
+		<td  width="75px"><%= form_for(item) do |f| %>
+			<%= f.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",nil]), { }, { :style => 'margin-top:6px;' } %>
+			<% end %>
+		</td>
+	        <td width=""><button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="toggleHide(this.value)" >
+			  <span id="item-<%= item.id %>-minus"><%= fa_icon "minus-circle" %></span><span style="display:none;" id="item-<%= item.id %>-plus"><%= fa_icon "plus-circle" %></span>
+			</button><b><span class="text-primary">   <%= Item.find(item.item_id).name %></span></b></td> <%# display modifiers? How to resolve ambiguity between items? Multiple rows, I suppose. That really seems to be the only way. It is going to be a rather complex layout. Each row (item row vs modifier row) needs to have different styles. Get rid of the hover. Get rid of the stripes. Option to remove modifiers from this page? [but no add, that'd be ridiculous!] %>
+	        <td width="150px">
+	<div class="btn-group btn-group-justified">
+		<%= link_to 'Edit', edit_cart_item_path(item), class: "btn btn-info btn-xs btn-block" %>
+		<%= link_to 'Remove', item, method: :delete, data: { confirm: 'Are you sure you want to remove the item from your cart?' }, class: "btn btn-danger btn-xs btn-block" %>
+	</div></td>
 	      </tr>
+		 
+		
+		<%# begin %>
+
+			<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == item.id }%>
+
+					<% count = selected_mods.count %>	
+					<% selected_mods.each_with_index do |sel, i| %>
+						<% mod = Modifier.find(sel.modifier_id) %>
+					
+					<tr class="modifier_row active" >
+						<td></td>
+						<td><em><span class="text-muted" style="margin-left:1em;margin-right:-1em;"><%= mod.name %></em></span></td>
+						<td></td>
+					</tr>
+					<% end %>
+
+		<%# end %>
+			
 	    <% end %>
 	  </tbody>
 	</table>
+
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-bottom:10px;">
+<%= link_to 'This order is for pick-up', pages_payment_path, class: "btn btn-success btn-block" %>
+</div>
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-bottom:10px;">
+<%= link_to 'This order is for delivery', pages_select_path, class: "btn btn-success btn-block" %>
+</div>
+</div>
+
+<% else %>
+<div class="well bg-info"><span class="text-primary">Looks like your cart is empty. Look at our <b><%= link_to 'menu', pages_menu_path %></b> to see what you can add.</span></div>
+
+<% end %>
 
 <% end %>

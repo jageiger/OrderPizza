@@ -65,7 +65,7 @@ class CartItemsController < ApplicationController
   def update
     respond_to do |format|
       if @cart_item.update(cart_item_params)
-        format.html { redirect_to @cart_item, notice: 'Cart item was successfully updated.' }
+        format.html { redirect_to orders_path, notice: 'Item was successfully updated.' }
         format.json { render :show, status: :ok, location: @cart_item }
       else
         format.html { render :edit }
@@ -79,7 +79,7 @@ class CartItemsController < ApplicationController
   def destroy
     @cart_item.destroy
     respond_to do |format|
-      format.html { redirect_to cart_items_url, notice: 'Cart item was successfully destroyed.' }
+      format.html { redirect_to :back, notice: 'Item was successfully removed from cart.' }
       format.json { head :no_content }
     end
   end

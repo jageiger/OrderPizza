@@ -1,66 +1,142 @@
 <h1><%= @item.name %></h1>
 
-	<p><%= @item.description %></p>
+	<div class="well bg-info"><b><span class="text-primary">Description: </span></b><%= @item.description %></div>
+	
 	
 	<% c_item = @cart_item %>
-	<%= render 'mods' %>
+
 	
 	
-	<br>
-	
-	
-	<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id }%>
+	<div id="modifier_groups">
+		
+	<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
+	<% puts options.to_s %>
 	<% options.each do |applied_mod_group| %>
 		<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
 		<% modifier_groups.each do |modifier_group| %>
-			<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id = modifier_group.id }%>
+			<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.id }%>
 			<% collection_of_mods = [] %>
 			<% grouped_modifiers.each do |grouped_modifer| %>
 				<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
-				<% collection_of_mods.push modifier %>
+				
+				<% unless(SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id }.any?) %>
+			    
+				
+					<% collection_of_mods.push modifier %>
+				<% end %>
 				
 			<% end%>
-				
-				
-				<%# if click, then AJAX a form request for a new 'selected' modifier, as well as update CSS? Uh-oh. There's the definite problem of using this form for a item that doesn't exist... How can I give it a cart_item, when the record of the cart_item isn't yet saved? It looks like I will HAVE to save the item before I can apply modifiers. Perhaps I can discreetly save it? So, when they click "Add to Cart", it creates it and saves it, and then redirects to the edit page. The submit button for this form instead says "Update Item"... Well, actually, the user doesn't see a form for the new method, right? It takes them to the edit, which has a cart_item id, so I do the rest as AJAX requests. %>
-	
-	
-	<%# BEGIN OLD %>
-	<% selected_mod = SelectedModifier.new %>
-	<%= form_for(selected_mod, :remote => true, :html=>{:id=>'price_form', :style=>'' } ) do |g| %>
-	  	<%= modifier_group.name %><br>
-	
-	<%# I could have, instead of the way I WAS doing it, display a collection of modifiers... That would totally work, bro. That would totally work. Like this below one I made before: %>
-	<%#= f.select :period, options_for_select([["One Day", 1], ["One Week", 7],["Two Weeks", 14], ["One Month", 30], ["Six Months", 180]], @join.period), {}, onchange: "$('#price_form').submit();", class: "form-control" %>
-	<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), {}, onchange: "$('#price_form').submit();", class: "form-control" %>
-			<%# selected_mod.cart_item = @cart_item %>
-			<%# selected_mod.modifier = modifier %>
-			<%# selected_mod.save %>
-			<% g.submit %>
 
-								<%#= f.select :period, options_for_select([["One Day", 1], ["One Week", 7],["Two Weeks", 14], ["One Month", 30], ["Six Months", 180]], @join.period), {}, onchange: "$('#price_form').submit();", class: "form-control" %>
+			<% selected_mod = SelectedModifier.new %>
+			<% tempName = modifier_group.name.tr(' ', '_').camelize %>
+			<%= form_for(selected_mod, :remote => true, :html=>{:id=>"#{tempName}", :style=>"" }, validate: true) do |g| %>
+		     <div class="form-group">
+			  <% if(collection_of_mods.any?) %>
+	  			<b><%= modifier_group.name %></b><br>
+				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<div id="<%= tempName %>Error"></div>
+				
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "Select '#{modifier_group.name}'" }, :id => "#{tempName}Select", onchange: " if ( $( '##{tempName}Select' ).val()=='' )
+	   { $('##{tempName}Error').html('<p>Please do not try to select the placeholder.</p>'); } else { $('##{tempName}').submit(); $('##{tempName}Error').html(''); }", class: "form-control" %>
+	
+				<% else %>
+				<b><%= modifier_group.name %></b><br>
+				<div id="<%= tempName %>Error"></div>
 
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_mods, 'id', 'name'), { :prompt => "All '#{modifier_group.name.pluralize}' selected." }, :id => "#{tempName}Select", :disabled => "disabled", onchange: " if ( $( '##{tempName}Select' ).val()=='' )
+	   { $('##{tempName}Error').html('<p>Please do not try to select the placeholder.</p>'); } else { $('##{tempName}').submit(); $('##{tempName}Error').html(''); }", class: "form-control" %>
+
+				<% end %>
+			  </div>
+
+			<% end %>
+		<% end %>	
+	<% end %>
+	</div>
+	
+	<div id="selected_modifiers">
+
+	<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
+	<% next_hue = 5 %>
+		<div class="row" style="margin-bottom: -20px;">
+			<% count = selected_mods.count %>
+			<% unless selected_mods.blank? %>
+			<% selHue = SelectedModifier.find(selected_mods.last.id).hue %>
+			<%# puts "selHue: "+selHue %>
+			<% end %>
+			
+			<% selected_mods.each_with_index do |sel, i| %>
+				<% mod = Modifier.find(sel.modifier_id) %>
+				<% remainderA = count%3 %>
+				<% remainderB = count%4 %>
+
+					<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+				
+				<% next_hue = next_hue + 1 %>
+				<% string = next_hue.to_s(2) # 5, written out as 32bit %>
+				
+				<%# unless selHue.blank? %>
+				<% if sel.hue.blank? %>
+				  <% if i > 0 %>
+				    <% sel.hue = ((selected_mods[i-1].hue).to_i+1).to_s %>
+				  <% else %>
+				    <% sel.hue = 6 %>
+				  <% end %>
+				<% end %>
+				
+		
+					<% string = sel.hue.to_i.to_s(2) %>
 					
-	<% end %>
-	
-	
-	<%# END OLD %>			
+					<%# else %>
+						<%# set hue to five... + 1 %>
+						<%# selHue = 5 %>
+						<%# string = sel.hue.to_i.to_s(2) %>
+					<%# end %>
+					
+				<% if string.length < 32 %>
+					<% num = 32 - string.length %>
+					<% newString = "" %>
+					<% for i in 1..num do %>
+						<% newString += "0" %>
+					<% end %>
+					<% newString += string %>
+					<% string = newString %>
+				<% end %>
+				<% puts "string"+sel.hue.to_s+": "+string %>
+				<% num = reverse(string).to_i(2) %>
+				<% numF = num.to_f / (2**32) %>
 				
+				<% hue = ((numF + 0.6) % 1) %>
+				<% degrees = (hue * 360).round # going to save degrees to selected_modifier.color %>
+				<% if sel.color.blank? %>
+				<% puts "blankblankblank" %>
 				
+				<% sel.color = degrees.to_s %>
+
 				
+				<% end %>
+								<% sel.save %>
 				
-				
-		
-		
-			<%# modifiers = Modifier.all.select{ |t| t.}%>
-		
-		<% end %>
-		
-	
-	
-	<% end %>
+				<% panelStyle = "border-color: hsl(" + sel.color + ", 25%, 65%);" %>
+				<% panelHeading = "background-color: hsl(" + sel.color + ", 50%, 65%); border-color: hsl(" + sel.color + ", 25%, 65%);" %>
+						<div class="panel panel-info <%= sel.hue %>" style="<%= panelStyle %>" >
+					  		<div class="panel-heading" style="<%= panelHeading %>" >
+					    		<h3 class="panel-title"><%= mod.name %></h3>
+					  		</div>
+					  		<div class="panel-body">
+					    		Further options.
+								<br>
+								<div class="add-button">
+									<%= link_to 'Remove', sel, method: :delete, class: "btn btn-primary btn-xs btn-block", style: "", :remote => true %>
+								</div>
+					  		</div>
+						</div>
+					</div>
+			<% end %>
+			
+		</div>
+		</div>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @cart_item %> |
-<%= link_to 'Back', cart_items_path %>
+<%= link_to 'Back', orders_path %>
