@@ -1,8 +1,22 @@
 	<% @ca = s_mod %>
 	<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @ca.cart_item_id }%>
 	<% next_hue = 5 %>
+	
+	
+	
 		<div class="row" style="margin-bottom: -20px;">
-			<% count = selected_mods.count %>	
+			<% count = selected_mods.count %>
+			<% unless selected_mods.blank? %>
+			<% lastMod = SelectedModifier.find(selected_mods.last.id) %>
+		
+				<% begin %>
+			
+					<% puts "inspect: " + lastMod.inspect %>
+					
+					<%# lastMod = SelectedModifier.find(lastMod.id - 1) %>
+				<% end while SelectedModifier.exists?(:id => lastMod.id - 1) %>
+			<% end %>
+			
 			<% selected_mods.each_with_index do |sel, i| %>
 				<% mod = Modifier.find(sel.modifier_id) %>
 				<% remainderA = count%3 %>
@@ -12,6 +26,17 @@
 
 				<% next_hue = next_hue + 1 %>
 				<% string = next_hue.to_s(2) %>
+				
+				<% unless selHue.blank? %>
+					<% selHue = selHue.to_i + 1 %>
+					<% sel.hue = selHue %>
+					<% string = sel.hue.to_i.to_s(2) %>
+				<% else %>
+					<%# set hue to five... + 1 %>
+					<% selHue = 5 %>
+					<% string = sel.hue.to_i.to_s(2) %>
+				<% end %>
+				
 				<% if string.length < 32 %>
 					<% num = 32 - string.length %>
 					<% newString = "" %>
@@ -23,10 +48,17 @@
 				<% end %>
 				<% num = reverse(string).to_i(2) %>
 				<% numF = num.to_f / (2**32) %>
+				
 				<% hue = ((numF + 0.6) % 1) %>
-				<% degrees = (hue * 360).round %>
-				<% panelStyle = "border-color: hsl(" + degrees.to_s + ", 25%, 65%);" %>
-				<% panelHeading = "background-color: hsl(" + degrees.to_s + ", 50%, 65%); border-color: hsl(" + degrees.to_s + ", 25%, 65%);" %>
+				<% degrees = (hue * 360).round # going to save degrees to selected_modifier.color %>
+				<% if sel.color.blank? %>
+				<% puts "blankblankblank" %>
+				
+				<% sel.color = degrees.to_s %>
+				<% sel.save %>
+				<% end %>
+				<% panelStyle = "border-color: hsl(" + sel.color + ", 25%, 65%);" %>
+				<% panelHeading = "background-color: hsl(" + sel.color + ", 50%, 65%); border-color: hsl(" + sel.color + ", 25%, 65%);" %>
 						<div class="panel panel-info" style="<%= panelStyle %>" >
 					  		<div class="panel-heading" style="<%= panelHeading %>" >
 					    		<h3 class="panel-title"><%= mod.name %></h3>
