@@ -58,7 +58,7 @@
 			</button>
 		<% else %>
 			<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="" >
-			  <%= fa_icon "circle" %>
+			  <%= fa_icon "circle-o" %>
 			</button>
 		<% end %>
 	        <b><span class="text-primary">   <%= Item.find(item.item_id).name %></span></b></td> <%# display modifiers? How to resolve ambiguity between items? Multiple rows, I suppose. That really seems to be the only way. It is going to be a rather complex layout. Each row (item row vs modifier row) needs to have different styles. Get rid of the hover. Get rid of the stripes. Option to remove modifiers from this page? [but no add, that'd be ridiculous!] %>
