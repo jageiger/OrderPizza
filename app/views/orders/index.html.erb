@@ -50,9 +50,18 @@
 			<%= f.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",nil]), { }, { :style => 'margin-top:6px;' } %>
 			<% end %>
 		</td>
-	        <td width=""><button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="toggleHide(this.value)" >
-			  <span id="item-<%= item.id %>-minus"><%= fa_icon "minus-circle" %></span><span style="display:none;" id="item-<%= item.id %>-plus"><%= fa_icon "plus-circle" %></span>
-			</button><b><span class="text-primary">   <%= Item.find(item.item_id).name %></span></b></td> <%# display modifiers? How to resolve ambiguity between items? Multiple rows, I suppose. That really seems to be the only way. It is going to be a rather complex layout. Each row (item row vs modifier row) needs to have different styles. Get rid of the hover. Get rid of the stripes. Option to remove modifiers from this page? [but no add, that'd be ridiculous!] %>
+		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == item.id }%>
+		<td width="">
+		<% unless selected_mods.blank? %>
+			<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="toggleHide(this.value)" >
+			  <%= fa_icon "minus-circle" %>
+			</button>
+		<% else %>
+			<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="" >
+			  <%= fa_icon "circle" %>
+			</button>
+		<% end %>
+	        <b><span class="text-primary">   <%= Item.find(item.item_id).name %></span></b></td> <%# display modifiers? How to resolve ambiguity between items? Multiple rows, I suppose. That really seems to be the only way. It is going to be a rather complex layout. Each row (item row vs modifier row) needs to have different styles. Get rid of the hover. Get rid of the stripes. Option to remove modifiers from this page? [but no add, that'd be ridiculous!] %>
 	        <td width="150px">
 	<div class="btn-group btn-group-justified">
 		<%= link_to 'Edit', edit_cart_item_path(item), class: "btn btn-info btn-xs btn-block" %>
@@ -63,7 +72,7 @@
 		
 		<%# begin %>
 
-			<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == item.id }%>
+			
 
 					<% count = selected_mods.count %>	
 					<% selected_mods.each_with_index do |sel, i| %>
