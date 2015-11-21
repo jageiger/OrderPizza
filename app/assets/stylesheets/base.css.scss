@@ -21,10 +21,35 @@
   line-height: 23px;
 }
 
+
 .btn {
   font-size: 14px;
   line-height: 28px;
   font-weight: 500;
+  text-transform: none;
+}
+
+
+.btn-alt {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   text-transform: none;
 }
 
@@ -110,38 +135,37 @@
 
 button:focus {outline:0 !important;}
 
-/*
-.btn-link {
-  color: #325d88;
+
+.btn-link-alt {
+  font-size: 16px;
+  color: #000000;
   font-weight: normal;
   border-radius: 0;
 }
-.btn-link,
-.btn-link:active,
-.btn-link.active,
-.btn-link[disabled],
-fieldset[disabled] .btn-link {
+.btn-link-alt,
+.btn-link-alt:active,
+.btn-link-alt.active,
+.btn-link-alt[disabled],
+fieldset[disabled] .btn-link-alt {
   background-color: transparent;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-.btn-link,
-.btn-link:hover,
-.btn-link:focus,
-.btn-link:active {
+.btn-link-alt,
+.btn-link-alt:hover,
+.btn-link-alt:focus,
+.btn-link-alt:active {
   border-color: transparent;
 }
-.btn-link:hover,
-.btn-link:focus {
-  color: #244463;
-  text-decoration: underline;
+.btn-link-alt:hover,
+.btn-link-alt:focus {
+  color: #00000;
   background-color: transparent;
 }
-.btn-link[disabled]:hover,
-fieldset[disabled] .btn-link:hover,
-.btn-link[disabled]:focus,
-fieldset[disabled] .btn-link:focus {
-  color: #82a9d1;
+.btn-link-alt[disabled]:hover,
+fieldset[disabled] .btn-link-alt:hover,
+.btn-link-alt[disabled]:focus,
+fieldset[disabled] .btn-link-alt:focus {
+  color: #000000;
   text-decoration: none;
 }
-*/
