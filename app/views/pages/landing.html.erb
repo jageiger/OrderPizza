@@ -39,29 +39,91 @@
 <% end %>
 
 <h1>Daily Special</h1>
-<% @applied_labels = AppliedLabel.all.select { |t| t.daily_special && t.day == Time.now.wday } %>
-<% @applied_labels.each do |applied_label| %>
-	<% label = Label.find(applied_label.label_id) %>
-	<%= label.name %>
-	<% items = Item.all.select { |t| t.id == applied_label.item_id } %>
-	<% items.each do |item| %>
-		- <%= item.name %>
+
+	<% first = true %>
+	
+	<% @applied_labels = AppliedLabel.all.select { |t| t.daily_special && t.day == Time.now.wday } %>
+	
+	<% @applied_labels.each do |applied_label| %>
+		<% next_hue = 5 # if next_hue is outside of this foreach loop, then each section of the menu, will start continue where it left off. I kinda prefer this current one, although I don't facor the starting volor.'%>
+
+		<% items = Item.all.select { |t| t.id == applied_label.item_id } %>
+		<% count = items.count %>
+		<% adjustment = 0 %>
+
+			<div id="<%= applied_label.id %>">
+
+				<div class="row">
+
+				<% items.each_with_index do |item, i| %>
+					
+					<% if count%2 != 0 && count%3 != 0 && count%4 != 0 %>
+						<% adjustment = 1 %>
+					<% end %>
+					
+					<% remainderA = count%3 %>
+					<% remainderB = count%4 %>
+					
+					<% if count == 1%>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<% elsif count == 2 %>
+					<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+					<% elsif count == 3 || remainderA == 0 || (remainderA > remainderB && remainderB !=0) %>
+					<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+					<% else %>
+					<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+					<% end %>
+					
+					<% next_hue = next_hue + 1 %>
+					
+					<% string = next_hue.to_s(2) %>
+					<% if string.length < 32 %>
+						<% num = 32 - string.length %>
+						<% newString = "" %>
+						<% for i in 1..num do %>
+							<% newString += "0" %>
+						<% end %>
+						<% newString += string %>
+						<% string = newString %>
+					<% end %>
+					<% num = reverse(string).to_i(2) %>
+					<% numF = num.to_f / (2**32) %>
+					<% hue = ((numF + 0.6) % 1) %>
+					<% degrees = (hue * 360).round %>
+
+					<% panelStyle = "border-color: hsl(" + degrees.to_s + ", 25%, 65%);" %>
+					<% panelHeading = "background-color: hsl(" + degrees.to_s + ", 50%, 65%); border-color: hsl(" + degrees.to_s + ", 25%, 65%);" %>
+
+						<div class="panel panel-info" style="<%= panelStyle %>" >
+						  <div class="panel-heading" style="<%= panelHeading %>" >
+						    <h3 class="panel-title"><%= item.name %></h3>
+						  </div>
+						  <div class="panel-body">
+						    <%= item.description %>
+							<br>
+							<div class="add-button">
+							<%= link_to "Add To Cart", cart_items_cart_path(:item => item.id), method: :post, class: "btn btn-primary btn-xs btn-block", style: "" %>
+							</div>
+						  </div>
+						</div>
+					</div>
+				<% end %>
+			
+			</div>
+		</div>
+		<% first = false %>
 	<% end %>
-<% end %>
 
-<br><br><br>
-<%= link_to 'Menu', pages_menu_path %><br>
-<%= link_to 'Orders', orders_path %> 
 
-<br><br><br>
+
+<!-- End -->
+
 <div class="row">
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">Lorem ipsum bacon</div>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-bottom:10px;">
+<%= link_to 'View Menu', pages_menu_path, class: "btn btn-success btn-block" %>
 </div>
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-bottom:10px;">
+<%= link_to 'View Cart', orders_path, class: "btn btn-success btn-block" %>
+</div>
+</div>
+
