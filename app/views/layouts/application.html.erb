@@ -24,7 +24,19 @@
             <%= link_to "Menu", pages_menu_path %>
           </li>
 		  <li>
-            <%= link_to "View Cart", orders_path %>
+			
+		    <% if user_signed_in? && current_user.open_order != nil %>
+				<% @cart_items = CartItem.all.select{ |t| t.user_id == current_user.id && t.order_id == current_user.open_order }%>
+				<% unless @cart_items.empty? %>
+					<%= link_to orders_path do %>
+						View Cart <span class="badge" style="margin-top:-2px;"><%= @cart_items.count %></span>
+					<% end %>
+				<% else %> 
+					<%= link_to "View Cart", orders_path %>
+				<% end %>
+			<% else %>
+				<%= link_to "View Cart", orders_path %>
+			<% end %> 
           </li>  
           <!-- <li class="dropdown"> <%# mouse over, display cart_items as drop downs... Click, links to orders_path %>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">DropDown <span class="caret"></span></a>

@@ -1,41 +1,227 @@
-<% unless current_user.try(:admin?) %>
+<% if current_user.try(:admin?) %>
 
 
 	<h1 style="color:green">Admin's Page of Awesomeness</h1>
+	
+	<div class="row" >
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Items</h3>
+			  </div>
+			  <div class="panel-body">
+			    ADMIN tool
+				<br>
+				<div class="add-button">
+					<%= link_to 'Items', items_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Categories</h3>
+			  </div>
+			  <div class="panel-body">
+			    ADMIN
+				<br>
+				<div class="add-button">
+				<%= link_to 'Categories', categories_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Categorizations</h3>
+			  </div>
+			  <div class="panel-body">
+			    Connects Category and Item
+				<br>
+				<div class="add-button">
+				<%= link_to 'Categorizations', categorizations_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Modifiers</h3>
+			  </div>
+			  <div class="panel-body">
+			    ADMIN Tool
+				<br>
+				<div class="add-button">
+					<%= link_to 'Modifiers', modifiers_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Modifier Groups</h3>
+			  </div>
+			  <div class="panel-body">
+			    ADMIN Tool
+				<br>
+				<div class="add-button">
+					<%= link_to 'Modifier Groups', modifier_groups_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Grouped Modifiers</h3>
+			  </div>
+			  <div class="panel-body">
+			    Joins mods and mod_group
+				<br>
+				<div class="add-button">
+				<%= link_to 'Grouped Modifiers', grouped_modifiers_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Applied Mod Groups</h3>
+			  </div>
+			  <div class="panel-body">
+			    ADMIN tool.
+				<br>
+				<div class="add-button">
+				<%= link_to 'Applied Mod Groups', applied_mod_groups_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Selected Modifiers</h3>
+			  </div>
+			  <div class="panel-body">
+			    Not intended for use.
+				<br>
+				<div class="add-button">
+					<%= link_to 'Selected Modifiers', selected_modifiers_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Cart Items</h3>
+			  </div>
+			  <div class="panel-body">
+			    NOT intended for use.
+				<br>
+				<div class="add-button">
+				<%= link_to 'Cart Items', cart_items_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Labels</h3>
+			  </div>
+			  <div class="panel-body">
+			    Tools
+				<br>
+				<div class="add-button">
+					<%= link_to 'Labels', labels_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+					
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Applied Labels</h3>
+			  </div>
+			  <div class="panel-body">
+			    Tools
+				<br>
+				<div class="add-button">
+					<%= link_to 'Applied Labels', applied_labels_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+					
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Addresses</h3>
+			  </div>
+			  <div class="panel-body">
+			    Tool intended for use by USER.
+				<br>
+				<div class="add-button">
+				<%= link_to 'Addresses', addresses_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Selected Address</h3>
+			  </div>
+			  <div class="panel-body">
+			    USER tool
+				<br>
+				<div class="add-button">
+					<%= link_to 'Selected Addresses', selected_addresses_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
 
-	<%= link_to 'Addresses', addresses_path %> - USER
-	<br>
-	<%= link_to 'Applied Labels', applied_labels_path %> - ADMIN, views not needed, as it is a join
-	<br>
-	<%= link_to 'Applied Mod Groups', applied_mod_groups_path %> - ADMIN
-	<br>
-	<%= link_to 'Cart Items', cart_items_path %> - USER
-	<br>
-	<%= link_to 'Categories', categories_path %> - ADMIN
-	<br>
-	<%= link_to 'Categorizations', categorizations_path %> - ADMIN, views not needed, as it is a join
-	<br>
-	<%= link_to 'Grouped Modifiers', grouped_modifiers_path %> - ADMIN, views not needed, as it is a join
-	<br>
-	<%= link_to 'Items', items_path %> - ADMIN. USER? I need to think about where the user will pick items before they end up cart_items. It's also going to have to display the DAILY SPECIAL crap.
-	<br>
-	<%= link_to 'Labels', labels_path %> - ADMIN
-	<br>
-	<%= link_to 'Modifier Groups', modifier_groups_path %> - ADMIN
-	<br>
-	<%= link_to 'Modifiers', modifiers_path %> - ADMIN
-	<br>
-	<%= link_to 'Orders', orders_path %> - ADMIN and USER. User, going to be past orders... So they can re-order. Admin, see all orders... 
-	<br>
-	<%= link_to 'Selected Addresses', selected_addresses_path %> - USER, views not needed, as it is a join. It will be displayed to the user. They might even have the option to change the address after the order has been paid for? IDK... They can pick from their addresses...
-	<br>
-	<%= link_to 'Selected Modifiers', selected_modifiers_path %> - USER, views not needed, as it is a join.
-	<br>
-	<%= link_to 'Taxes', taxes_path %> - ADMIN
-	<br>
-	<br>
-	<%#= link_to 'Users', users_path %>
-	<%= link_to 'Menu', pages_menu_path %> - ADMIN
+		
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Taxes</h3>
+			  </div>
+			  <div class="panel-body">
+			    ADMIN tool.
+				<br>
+				<div class="add-button">
+					<%= link_to 'Taxes', taxes_path, class: "btn btn-primary btn-xs btn-block", style: "" %>
+				</div>
+			  </div>
+			</div>	
+		</div>
+		
+	</div>
+
 <% end %>
 
 <h1>Daily Special</h1>
@@ -96,7 +282,7 @@
 
 						<div class="panel panel-info" style="<%= panelStyle %>" >
 						  <div class="panel-heading" style="<%= panelHeading %>" >
-						    <h3 class="panel-title"><%= item.name %></h3>
+						    <h3 class="panel-title"><strong><%= Label.find(applied_label.label_id).name %>:</strong> <em><%= item.name %></em></h3>
 						  </div>
 						  <div class="panel-body">
 						    <%= item.description %>
