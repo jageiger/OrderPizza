@@ -54,7 +54,7 @@
 		<%= form_for(item, :remote => true, :html=>{:id=>"q-#{item.id}", :style=>"" }) do |g| %>
 		  <% if (item.quantity == nil) || (item.quantity < 9) %>
 			
-			<%= g.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",10]), { }, :id => "#{item.id}-select", onchange: "$('#q-#{item.id}').submit();", class: 'form-control input-sm', style: 'margin-top:6px;' %>
+			<%= g.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",10]), { }, :id => "#{item.id}-select", onchange: "$('#q-#{item.id}').submit();", class: 'form-control input-sm', style: '' %>
 			
 			<% else %>
 
