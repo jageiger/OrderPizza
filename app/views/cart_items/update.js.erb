@@ -1,0 +1,1 @@
+$("#item-quantity-<%= @cart_item.id %>").html("<%= escape_javascript(render partial: "orders/quantity", locals: { item: @cart_item }).html_safe %>");

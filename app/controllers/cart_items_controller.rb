@@ -63,15 +63,32 @@ class CartItemsController < ApplicationController
   # PATCH/PUT /cart_items/1
   # PATCH/PUT /cart_items/1.json
   def update
-    respond_to do |format|
-      if @cart_item.update(cart_item_params)
-        format.html { redirect_to orders_path, notice: 'Item was successfully updated.' }
-        format.json { render :show, status: :ok, location: @cart_item }
-      else
-        format.html { render :edit }
-        format.json { render json: @cart_item.errors, status: :unprocessable_entity }
+    
+    puts "Params: " + cart_item_params.inspect
+    if @cart_item.quantity == cart_item_params[:quantity]
+    
+      respond_to do |format|
+        if @cart_item.update(cart_item_params)
+          format.html { redirect_to orders_path, notice: 'Item was successfully updated.' }
+          format.json { render :show, status: :ok, location: @cart_item }
+        else
+          format.html { render :edit }
+          format.json { render json: @cart_item.errors, status: :unprocessable_entity }
+        end
       end
+        
+    else 
+      
+      respond_to do |format|
+        if @cart_item.update(cart_item_params)
+          format.js
+        else
+          format.js
+        end
+      end
+      
     end
+    
   end
 
   # DELETE /cart_items/1

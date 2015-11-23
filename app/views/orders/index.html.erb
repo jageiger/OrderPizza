@@ -46,9 +46,32 @@
 
 	    <% @cart_items.each do |item| %>
 	      <tr class="header" id="item-<%= item.id %>" data-toggle-info="false" >
-		<td  width="75px"><%= form_for(item) do |f| %>
-			<%= f.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",nil]), { }, { :style => 'margin-top:6px;' } %>
+		<td id="item-quantity-<%= item.id %>" width="75px">
+		
+		
+		<!-- begin -->
+		
+		<%= form_for(item, :remote => true, :html=>{:id=>"q-#{item.id}", :style=>"" }) do |g| %>
+		  <% if (item.quantity == nil) || (item.quantity < 9) %>
+			
+			<%= g.select :quantity, ((1..9).map {|i| [i,i] } << ["10+",10]), { }, :id => "#{item.id}-select", onchange: "$('#q-#{item.id}').submit();", class: 'form-control input-sm', style: 'margin-top:6px;' %>
+			
+			<% else %>
+
+			<%= g.number_field :quantity, :id => "#{item.id}-select", onchange: "$('#q-#{item.id}').submit();", class: 'form-control input-sm', style: '' %><% g.submit %>
+			<script>
+			$('#{item.id}-select').bind('keyup mouseup', function () {
+			    $('#q-#{item.id}').submit();          
+			});​
+			</script>
+
 			<% end %>
+		<% end %>
+
+		<!-- end -->
+		
+		
+		
 		</td>
 		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == item.id }%>
 		<td width="">
