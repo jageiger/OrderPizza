@@ -34,9 +34,9 @@
 
 <table class="table">
   <thead>
-    <tr>
+    <tr class="text-muted">
       <th >Quantity</th>
-	  <th colspan="2">Item</th>
+	  <th colspan="2"><span style="margin-left:25px;">Item</span></th>
     </tr>
   </thead>
 
@@ -117,10 +117,10 @@
 
 <div class="row">
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-bottom:10px;">
-<%= link_to 'This order is for pick-up', pages_payment_path, class: "btn btn-success btn-block" %>
+<%= link_to 'This order is for pick-up', confirmation_orders_path(:m => 'pickup'), class: "btn btn-success btn-block" %>
 </div>
 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-bottom:10px;">
-<%= link_to 'This order is for delivery', pages_select_path, class: "btn btn-success btn-block" %>
+<%= link_to 'This order is for delivery', confirmation_orders_path(:m => 'delivery'), class: "btn btn-success btn-block" %>
 </div>
 </div>
 

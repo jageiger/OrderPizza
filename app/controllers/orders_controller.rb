@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: [:show, :edit, :update, :destroy], except: [:confirmation]
   after_filter :set_open_order, only: [:create]
 
   # GET /orders
@@ -7,6 +7,12 @@ class OrdersController < ApplicationController
   def index
     @orders = Order.all
   end
+  
+  def confirmation
+    @mode = params[:m]
+    @orders = Order.all
+  end
+  
 
   # GET /orders/1
   # GET /orders/1.json
