@@ -1,4 +1,5 @@
 class AppliedLabelsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_applied_label, only: [:show, :edit, :update, :destroy]
 
   # GET /applied_labels

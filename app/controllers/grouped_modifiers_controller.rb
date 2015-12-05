@@ -1,4 +1,5 @@
 class GroupedModifiersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_grouped_modifier, only: [:show, :edit, :update, :destroy]
 
   # GET /grouped_modifiers

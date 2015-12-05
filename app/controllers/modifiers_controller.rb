@@ -1,4 +1,5 @@
 class ModifiersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_modifier, only: [:show, :edit, :update, :destroy]
 
   # GET /modifiers

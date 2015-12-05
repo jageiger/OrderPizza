@@ -125,6 +125,26 @@ function toggleHide(value) {
 }
 
 </script>
+<% elsif (current_page?(pages_menu_path)) %>
+
+	<% @categories.each do |category| %>
+
+		<script>
+			$('.<%= category.name.html_safe %>-element').responsiveEqualHeightGrid();
+			
+			<%= category.name.html_safe %> = function() {
+				$('.<%= category.name.html_safe %>-element').responsiveEqualHeightGrid();
+			}
+			$(document).ready(<%= category.name.html_safe %>);
+
+			$(document).on('page:load', <%= category.name.html_safe %>);
+			
+			$('#tab_<%= category.id %>').click(<%= category.name.html_safe %>);
+			
+			$('body').click(<%= category.name.html_safe %>);
+		</script>
+	<% end %>
+
 <% end %>
 
 </body>

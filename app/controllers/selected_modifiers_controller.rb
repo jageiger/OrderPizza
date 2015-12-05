@@ -1,4 +1,5 @@
 class SelectedModifiersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_selected_modifier, only: [:show, :edit, :update, :destroy]
 
   # GET /selected_modifiers

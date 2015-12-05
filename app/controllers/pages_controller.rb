@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_order, only: [:select, :payment]
-  
+
   def landing
     unless user_signed_in?
       flash[:notice] = 'Please login'

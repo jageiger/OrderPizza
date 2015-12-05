@@ -1,4 +1,5 @@
 class AppliedModGroupsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_applied_mod_group, only: [:show, :edit, :update, :destroy]
 
   # GET /applied_mod_groups

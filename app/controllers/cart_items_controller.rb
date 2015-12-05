@@ -1,6 +1,8 @@
 class CartItemsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_cart_item, only: [:show, :edit, :update, :destroy]
   before_action :set_order, only: [:new, :add_to_cart]
+
 
   # GET /cart_items
   # GET /cart_items.json

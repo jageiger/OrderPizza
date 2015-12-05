@@ -1,4 +1,5 @@
 class SelectedAddressesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_selected_address, only: [:show, :edit, :update, :destroy]
 
   # GET /selected_addresses

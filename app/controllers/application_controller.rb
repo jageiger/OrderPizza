@@ -4,6 +4,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   
   before_filter :configure_permitted_parameters, if: :devise_controller?
+  
+  layout :layout_by_resource
+
+    def layout_by_resource
+      if devise_controller? && resource_name == :user && (action_name == 'new' || (action_name == 'edit' && !user_signed_in?) || action_name == 'create' || action_name=='show' || action_name=='update')
+         "login"
+      else
+        "application"
+      end
+    end
 
   protected
 

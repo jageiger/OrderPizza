@@ -9,7 +9,7 @@
 			<% else %>
 					<li>
 			<% end %>
-						<a href="#tab_<%= category.id %>" data-toggle="tab"> <%= category.name %></a>
+						<a href="#tab_<%= category.id %>" data-toggle="tab" onclick="<%= category.name.html_safe %>());return false;"> <%= category.name %></a>
 					</li>
 			<% first = false %>
 		<% end %>
@@ -88,11 +88,12 @@
 							    <h3 class="panel-title"><%= item.name %></h3>
 							  </div>
 							  <div class="panel-body">
-							    <%= item.description %>
+							    
+							<div class="<%= category.name %>-element"><%= item.description %></div>
 								<%# Descriptions need to be the same amount of characters, and if not, need to be normalized with character counts or somethin' %>
 								<br>
 								<div class="add-button">
-								<%= link_to "Add To Cart", cart_items_cart_path(:item => item.id), method: :post, class: "btn btn-primary btn-xs btn-block", style: "" %>
+								<%= link_to "Add To Cart", cart_items_cart_path(:item => item.id), method: :post, class: "btn btn-primary btn-xs btn-block", style: "margin-top:-20px;" %>
 								</div>
 							  </div>
 							</div>
@@ -117,3 +118,7 @@
 		<% end %>
 	</div>
 </div>
+
+
+
+
