@@ -14,3 +14,6 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore the big video that GitHub won't lemme push
+/app/assets/videos/Background.m4v
