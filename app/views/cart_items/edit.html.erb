@@ -5,12 +5,20 @@
 	
 	<% c_item = @cart_item %>
 
+	<% if @cart_item.size_id.blank? %>
+		<p>No size selected</p>
+	<% end %>
 	
+	<% sizes = ItemSize.all.select{ |t| t.item_id == @item.id } %>
+	<% if sizes.any? %>
+	There are some sizes available
+	<% else %>
+	There aren't any sizes, default price please
+	<% end %>
 	
 	<div id="modifier_groups">
 		
 	<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
-	<% puts options.to_s %>
 	<% options.each do |applied_mod_group| %>
 		<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
 		<% modifier_groups.each do |modifier_group| %>
