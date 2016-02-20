@@ -8,6 +8,8 @@ gem 'foundation-rails'
 
 gem "font-awesome-rails"
 
+gem 'carrierwave'
+
 gem 'client_side_validations', github: 'DavyJonesLocker/client_side_validations'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
