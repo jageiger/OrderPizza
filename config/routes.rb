@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :selected_sizes
+
+  resources :applied_sizes
+
   resources :item_sizes
 
   resources :applied_labels

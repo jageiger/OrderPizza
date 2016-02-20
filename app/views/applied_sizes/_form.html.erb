@@ -1,0 +1,25 @@
+<%= form_for(@applied_size) do |f| %>
+  <% if @applied_size.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@applied_size.errors.count, "error") %> prohibited this applied_size from being saved:</h2>
+
+      <ul>
+      <% @applied_size.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :item_id %><br>
+    <%= f.select :item_id, options_from_collection_for_select(@items, "id", "name", @applied_size.item_id), {}, class: "form-control", :prompt => "Select item" %>
+  </div>
+  <div class="field">
+    <%= f.label :item_size_id %><br>
+    <%= f.select :item_size_id, options_from_collection_for_select(@item_sizes, "id", "name", @applied_size.item_size_id), {}, class: "form-control", :prompt => "Select item size" %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

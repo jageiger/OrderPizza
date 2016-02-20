@@ -9,11 +9,19 @@
 		<p>No size selected</p>
 	<% end %>
 	
-	<% sizes = ItemSize.all.select{ |t| t.item_id == @item.id } %>
+	<% # sizes = ItemSize.all.select{ |t| t.item_id == @item.id } %>
+	<% #above is the old code. Now we're looking for the appliedsizes %>
+	<% sizes = AppliedSize.all.select{ |t| t.item_id == @item.id }%>
 	<% if sizes.any? %>
 	There are some sizes available
+		<% # show selected size %>
+		<% sizes.each do |applied_size| %>
+			<% size = ItemSize.find(applied_size.item_size_id) %>
+			<%= size.name %>
+		<% end %>
 	<% else %>
 	There aren't any sizes, default price please
+		<% #logically, there couldn't be a selected size if there weren't any sizes to select from %>
 	<% end %>
 	
 	<div id="modifier_groups">

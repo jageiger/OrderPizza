@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160202224929) do
+ActiveRecord::Schema.define(version: 20160220002130) do
 
   create_table "addresses", force: true do |t|
     t.integer  "user_id"
@@ -41,6 +41,13 @@ ActiveRecord::Schema.define(version: 20160202224929) do
   create_table "applied_mod_groups", force: true do |t|
     t.integer  "modifier_group_id"
     t.integer  "item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "applied_sizes", force: true do |t|
+    t.integer  "item_id"
+    t.integer  "item_size_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -115,6 +122,15 @@ ActiveRecord::Schema.define(version: 20160202224929) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "child"
+    t.integer  "parent_modifier_group_id"
+    t.string   "prepend_name"
+    t.string   "display_name"
+    t.float    "add_price"
+    t.float    "mult_price"
+    t.boolean  "exclusive"
+    t.integer  "max_num_of_modifiers"
+    t.integer  "interface_position"
   end
 
   create_table "modifiers", force: true do |t|
@@ -124,6 +140,15 @@ ActiveRecord::Schema.define(version: 20160202224929) do
     t.boolean  "use_extras"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "rotate"
+    t.float    "density"
+    t.float    "scale_range_low"
+    t.float    "scale_range_high"
+    t.string   "file"
+    t.integer  "file_width"
+    t.integer  "file_height"
+    t.integer  "grid_x"
+    t.integer  "grid_y"
   end
 
   create_table "orders", force: true do |t|
@@ -149,6 +174,14 @@ ActiveRecord::Schema.define(version: 20160202224929) do
     t.datetime "updated_at"
     t.string   "color"
     t.string   "hue"
+    t.integer  "applied_mod_group_id"
+  end
+
+  create_table "selected_sizes", force: true do |t|
+    t.integer  "cart_item_id"
+    t.integer  "item_size_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "taxes", force: true do |t|

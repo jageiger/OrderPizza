@@ -1,0 +1,27 @@
+<h1>Listing applied_sizes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Cart item</th>
+      <th>Item size</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @applied_sizes.each do |applied_size| %>
+      <tr>
+        <td><%= applied_size.item_id %></td>
+        <td><%= applied_size.item_size_id %></td>
+        <td><%= link_to 'Show', applied_size %></td>
+        <td><%= link_to 'Edit', edit_applied_size_path(applied_size) %></td>
+        <td><%= link_to 'Destroy', applied_size, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Applied size', new_applied_size_path %>

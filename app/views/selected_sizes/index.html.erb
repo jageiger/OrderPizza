@@ -1,0 +1,27 @@
+<h1>Listing selected_sizes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Cart item</th>
+      <th>Item size</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @selected_sizes.each do |selected_size| %>
+      <tr>
+        <td><%= selected_size.cart_item_id %></td>
+        <td><%= selected_size.item_size_id %></td>
+        <td><%= link_to 'Show', selected_size %></td>
+        <td><%= link_to 'Edit', edit_selected_size_path(selected_size) %></td>
+        <td><%= link_to 'Destroy', selected_size, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Selected size', new_selected_size_path %>

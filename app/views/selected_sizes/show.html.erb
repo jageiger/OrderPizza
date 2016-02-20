@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Cart item:</strong>
+  <%= @selected_size.cart_item_id %>
+</p>
+
+<p>
+  <strong>Item size:</strong>
+  <%= @selected_size.item_size_id %>
+</p>
+
+<%= link_to 'Edit', edit_selected_size_path(@selected_size) %> |
+<%= link_to 'Back', selected_sizes_path %>

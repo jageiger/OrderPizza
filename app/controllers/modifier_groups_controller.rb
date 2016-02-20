@@ -15,11 +15,13 @@ class ModifierGroupsController < ApplicationController
 
   # GET /modifier_groups/new
   def new
+    @modifier_groups = ModifierGroup.all
     @modifier_group = ModifierGroup.new
   end
 
   # GET /modifier_groups/1/edit
   def edit
+    @modifier_groups = ModifierGroup.all
   end
 
   # POST /modifier_groups
@@ -70,6 +72,6 @@ class ModifierGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def modifier_group_params
-      params.require(:modifier_group).permit(:name)
+      params.require(:modifier_group).permit(:name, :child, :parent_modifier_group_id, :prepend_name, :display_name, :add_price, :mult_price, :exclusive, :max_num_of_modifiers, :interface_position)
     end
 end

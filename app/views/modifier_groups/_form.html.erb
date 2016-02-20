@@ -15,6 +15,42 @@
     <%= f.label :name %><br>
     <%= f.text_field :name %>
   </div>
+  <div class="field">
+    <%= f.label :child %><br>
+    <%= f.check_box :child %>
+  </div>
+  <div class="field">
+    <%= f.label :parent_modifier_group_id %><br>
+    <%= f.select :parent_modifier_group_id, options_from_collection_for_select(@modifier_groups, "id", "name", @modifier_group.parent_modifier_group_id), {:include_blank => "Please select..."}, class: "form-control", :prompt => "Select parent modifier group" %>
+  </div>
+  <div class="field">
+    <%= f.label :prepend_name %><br>
+    <%= f.text_field :prepend_name %>
+  </div>
+  <div class="field">
+    <%= f.label :display_name %><br>
+    <%= f.text_field :display_name %>
+  </div>
+  <div class="field">
+    <%= f.label :add_price %><br>
+    <%= f.number_field :add_price %>
+  </div>
+  <div class="field">
+    <%= f.label :mult_price %><br>
+    <%= f.number_field :mult_price %>
+  </div>
+  <div class="field">
+    <%= f.label :exclusive %><br>
+    <%= f.check_box :exclusive %>
+  </div>
+  <div class="field">
+    <%= f.label :max_num_of_modifiers %><br>
+    <%= f.number_field :max_num_of_modifiers %>
+  </div>
+  <div class="field">
+    <%= f.label :interface_position %><br>
+    <%= f.number_field :interface_position %>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

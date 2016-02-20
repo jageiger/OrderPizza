@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @applied_size.item_id %>
+</p>
+
+<p>
+  <strong>Item size:</strong>
+  <%= @applied_size.item_size_id %>
+</p>
+
+<%= link_to 'Edit', edit_applied_size_path(@applied_size) %> |
+<%= link_to 'Back', applied_sizes_path %>
