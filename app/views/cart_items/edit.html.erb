@@ -5,22 +5,45 @@
 	
 	<% c_item = @cart_item %>
 
-	<% if @cart_item.size_id.blank? %>
-		<p>No size selected</p>
-	<% end %>
 	
 	<% # sizes = ItemSize.all.select{ |t| t.item_id == @item.id } %>
 	<% #above is the old code. Now we're looking for the appliedsizes %>
 	<% sizes = AppliedSize.all.select{ |t| t.item_id == @item.id }%>
 	<% if sizes.any? %>
-	There are some sizes available
 		<% # show selected size %>
+		<% collection_of_sizes = [] %>
 		<% sizes.each do |applied_size| %>
 			<% size = ItemSize.find(applied_size.item_size_id) %>
-			<%= size.name %>
+			<% collection_of_sizes.push size %>
+			<% # need to work on sorting!!! %>
 		<% end %>
+		
+		<% # first look for a size already... if there is not already a selected size, %>
+		<% possible_sizes = SelectedSize.all.select{ |t| t.cart_item_id == @cart_item.id}%>
+		<% unless possible_sizes.any? %>
+			<% selection = SelectedSize.new %>
+			<%# message = "No size selected"%>
+		<% else %>
+			<% selection = possible_sizes.first %>
+		<% end %>
+		
+			<%= form_for(selection, :remote => true, :html=>{:id=>"sizeBox", :style=>"" }, validate: true) do |g| %>
+		     <div class="form-group">
+	  			<b>Size</b><br>
+				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<div id="sizeBoxError"></div>
+
+				<%= g.select :item_size_id, options_from_collection_for_select(collection_of_sizes, 'id', 'name'), { :prompt => "Select a size" }, :id => "sizeBoxSelect", onchange: " if ( $( '#sizeBoxSelect' ).val()=='' )
+	   { $('#sizeBoxError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#sizeBox').submit(); $('#sizeBoxError').html(''); }", class: "form-control" %>
+
+
+			  </div>
+
+			<% end %>
+		
+		
 	<% else %>
-	There aren't any sizes, default price please
+	<% # There aren't any sizes, default price please%>	
 		<% #logically, there couldn't be a selected size if there weren't any sizes to select from %>
 	<% end %>
 	

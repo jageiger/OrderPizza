@@ -1,3 +1,3 @@
 class Modifier < ActiveRecord::Base
-  mount_uploader :file, FileUploader
+  mount_uploader :file, ToppingUploader
 end
