@@ -25,6 +25,7 @@
 			<%# message = "No size selected"%>
 		<% else %>
 			<% selection = possible_sizes.first %>
+			<% # code to look up the default size (item.size), set the option elect to that value?%>
 		<% end %>
 		
 			<%= form_for(selection, :remote => true, :html=>{:id=>"sizeBox", :style=>"" }, validate: true) do |g| %>

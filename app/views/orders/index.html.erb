@@ -70,21 +70,70 @@
 
 		<!-- end -->
 		
-		
+
 		
 		</td>
 		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == item.id }%>
 		<td width="">
-		<% unless selected_mods.blank? %>
-			<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="toggleHide(this.value)" >
-			  <%= fa_icon "minus-circle" %>
-			</button>
-		<% else %>
-			<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="" >
-			  <%= fa_icon "circle-o" %>
-			</button>
+			<% sizes = AppliedSize.all.select{ |t| t.item_id == item.item_id }%>
+			<% if sizes.any? %>
+				<% # show selected size %>
+				<% collection_of_sizes = [] %>
+				<% sizes.each do |applied_size| %>
+					<% size = ItemSize.find(applied_size.item_size_id) %>
+					<% collection_of_sizes.push size %>
+					<% # need to work on sorting!!! %>
+				<% end %>
+
+				<% # first look for a size already... if there is not already a selected size, %>
+				<% possible_sizes = SelectedSize.all.select{ |t| t.cart_item_id == item.id}%>
+				<% unless possible_sizes.any? %>
+					<% selection = SelectedSize.new %>
+					<%# message = "No size selected"%>
+				<% else %>
+					<% selection = possible_sizes.first %>
+					<% # code to look up the default size (item.size), set the option elect to that value?%>
+				<% end %>
+				<span class="pull-left">
+						<% unless selected_mods.blank? %>
+				
+							<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="toggleHide(this.value)" >
+							  <%= fa_icon "minus-circle" %>
+							</button>
+						<% else %>
+							<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="" >
+							  <%= fa_icon "circle-o" %>
+							</button>
+						<% end %>
+							</span>
+				
+		        <%= form_for(selection, :remote => true, :html=>{:id=>"s-#{item.id}", :style=>"" }, validate: true) do |g| %>
+		
+					
+		
+
+				<%= g.hidden_field :cart_item_id, :value => item.id %>
+				
+				<%= g.select :item_size_id, options_from_collection_for_select(collection_of_sizes, 'id', 'name'), { :prompt => "Select a size" }, :id => "#{item.id}-s-select", onchange: "$('#s-#{item.id}').submit();", class: 'form-control input-sm pull-left', style: 'width:auto;margin-right:10px;' %>
+				
+				
 		<% end %>
-	        <b><span class="text-primary">   <%= Item.find(item.item_id).name %></span></b></td> <%# display modifiers? How to resolve ambiguity between items? Multiple rows, I suppose. That really seems to be the only way. It is going to be a rather complex layout. Each row (item row vs modifier row) needs to have different styles. Get rid of the hover. Get rid of the stripes. Option to remove modifiers from this page? [but no add, that'd be ridiculous!] %>
+
+			<% end %>
+
+				<% if !sizes.any? %>
+<% unless selected_mods.blank? %>
+
+	<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="toggleHide(this.value)" >
+	  <%= fa_icon "minus-circle" %>
+	</button>
+<% else %>
+	<button type="button" id="item-<%= item.id %>-button" value="item-<%= item.id %>" class="btn btn-link header-toggle btn-xs" aria-label="Left Align" onclick="" >
+	  <%= fa_icon "circle-o" %>
+	</button>
+<% end %><% end %>
+<b><span class="text-primary" style="<% if sizes.any? %>line-height:2;<% end %>">   <%= Item.find(item.item_id).name %></span></b>
+	</td> <%# display modifiers? How to resolve ambiguity between items? Multiple rows, I suppose. That really seems to be the only way. It is going to be a rather complex layout. Each row (item row vs modifier row) needs to have different styles. Get rid of the hover. Get rid of the stripes. Option to remove modifiers from this page? [but no add, that'd be ridiculous!] %>
 	        <td width="150px">
 	<div class="btn-group btn-group-justified">
 		<%= link_to 'Edit', edit_cart_item_path(item), class: "btn btn-info btn-xs btn-block" %>
