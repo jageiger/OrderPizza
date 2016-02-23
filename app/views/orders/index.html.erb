@@ -114,7 +114,7 @@
 
 				<%= g.hidden_field :cart_item_id, :value => item.id %>
 				
-				<%= g.select :item_size_id, options_from_collection_for_select(collection_of_sizes, 'id', 'name'), { :prompt => "Select a size" }, :id => "#{item.id}-s-select", onchange: "$('#s-#{item.id}').submit();", class: 'form-control input-sm pull-left', style: 'width:auto;margin-right:10px;' %>
+				<%= g.select :item_size_id, options_from_collection_for_select(collection_of_sizes, 'id', 'name'), { :prompt => "Size" }, :id => "#{item.id}-s-select", onchange: "$('#s-#{item.id}').submit();", class: 'form-control input-sm pull-left', style: 'width:auto;margin-right:10px;' %>
 				
 				
 		<% end %>

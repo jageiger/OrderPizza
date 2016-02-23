@@ -53,8 +53,13 @@
 	<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
 	<% options.each do |applied_mod_group| %>
 		<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
+		
 		<% modifier_groups.each do |modifier_group| %>
-			<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.id }%>
+			<% if modifier_group.child %>
+				<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.parent_modifier_group_id }%>
+			<% else %>
+				<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.id }%>
+			<% end %>
 			<% collection_of_mods = [] %>
 			<% grouped_modifiers.each do |grouped_modifer| %>
 				<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
