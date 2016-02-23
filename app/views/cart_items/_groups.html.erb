@@ -15,7 +15,7 @@
 			<% grouped_modifiers.each do |grouped_modifer| %>
 				<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
 				
-				<% unless(SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id }.any?) %>
+				<% unless(SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id && t.applied_mod_group_id == modifier_group.id }.any?) %>
 					<% collection_of_mods.push modifier %>
 				<% end %>
 				
@@ -28,6 +28,7 @@
 			  <% if(collection_of_mods.any?) %>
 	  			<b><%= modifier_group.name %></b><br>
 				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
 				
 				<div id="<%= tempName %>Error"></div>
 				
