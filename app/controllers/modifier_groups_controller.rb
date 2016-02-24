@@ -72,6 +72,6 @@ class ModifierGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def modifier_group_params
-      params.require(:modifier_group).permit(:name, :child, :parent_modifier_group_id, :prepend_name, :display_name, :add_price, :mult_price, :exclusive, :max_num_of_modifiers, :interface_position)
+      params.require(:modifier_group).permit(:name, :child, :parent_modifier_group_id, :prepend_name, :display_name, :add_price, :mult_price, :exclusive, :max_num_of_modifiers, :interface_position, :prevent_incest)
     end
 end

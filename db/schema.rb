@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160220002130) do
+ActiveRecord::Schema.define(version: 20160223235825) do
 
   create_table "addresses", force: true do |t|
     t.integer  "user_id"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20160220002130) do
     t.boolean  "exclusive"
     t.integer  "max_num_of_modifiers"
     t.integer  "interface_position"
+    t.boolean  "prevent_incest"
   end
 
   create_table "modifiers", force: true do |t|

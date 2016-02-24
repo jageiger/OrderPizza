@@ -27,7 +27,7 @@ class SelectedModifiersController < ApplicationController
   def create
     @selected_modifier = SelectedModifier.new(selected_modifier_params)
     
-    if(SelectedModifier.all.select{ |t| t.cart_item_id == @selected_modifier.cart_item_id && t.modifier_id == @selected_modifier.modifier_id }.any?)
+    if ( ModifierGroup.find(@selected_modifier.applied_mod_group_id).prevent_incest && (SelectedModifier.all.select{ |t| t.cart_item_id == @selected_modifier.cart_item_id && t.modifier_id == @selected_modifier.modifier_id}.any?) ) || (SelectedModifier.all.select{ |t| t.cart_item_id == @selected_modifier.cart_item_id && t.modifier_id == @selected_modifier.modifier_id && t.applied_mod_group_id == @selected_modifier.applied_mod_group_id }.any?)
       #there is already an association, redirect, don't save!
       
       respond_to do |format|
