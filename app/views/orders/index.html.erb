@@ -146,16 +146,21 @@
 
 			
 
-					<% count = selected_mods.count %>	
-					<% selected_mods.each_with_index do |sel, i| %>
-						<% mod = Modifier.find(sel.modifier_id) %>
-					
-					<tr class="modifier_row active" >
-						<td></td>
-						<td><em><span class="text-muted" style="margin-left:1em;margin-right:-1em;"><%= mod.name %></em></span></td>
-						<td></td>
-					</tr>
-					<% end %>
+		<% count = selected_mods.count %>	
+		<% selected_mods.each_with_index do |sel, i| %>
+			<% mod = Modifier.find(sel.modifier_id) %>
+		
+		<tr class="modifier_row active" >
+			<td></td>
+			<% groop = ModifierGroup.find(sel.applied_mod_group_id) %>
+			<% if groop.child %>
+				<td><em><span class="text-muted" style="margin-left:1em;margin-right:-1em;"><%= groop.prepend_name %> <%= mod.name %></em></span></td>
+			<% else %>
+    			<td><em><span class="text-muted" style="margin-left:1em;margin-right:-1em;"><%= mod.name %></em></span></td>
+			<% end %>
+			<td></td>
+		</tr>
+		<% end %>
 
 		<%# end %>
 			

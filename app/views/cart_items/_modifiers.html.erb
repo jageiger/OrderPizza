@@ -63,7 +63,12 @@
 				<% panelHeading = "background-color: hsl(" + sel.color + ", 50%, 65%); border-color: hsl(" + sel.color + ", 25%, 65%);" %>
 						<div class="panel panel-info <%= sel.hue %>" style="<%= panelStyle %>" >
 					  		<div class="panel-heading" style="<%= panelHeading %>" >
-					    		<h3 class="panel-title"><%= mod.name %></h3>
+					    		<% groop = ModifierGroup.find(sel.applied_mod_group_id) %>
+								<% if groop.child %>
+									<h3 class="panel-title"><%= groop.prepend_name %> <%= mod.name %></h3>
+								<% else %>
+					    			<h3 class="panel-title"><%= mod.name %></h3>
+								<% end %>
 					  		</div>
 					  		<div class="panel-body">
 					    		Further options.
