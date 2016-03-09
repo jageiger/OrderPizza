@@ -1,3 +1,5 @@
+<% unless @item.fancy_interface %>
+
 <h1><%= @item.name %></h1>
 
 	<div class="well bg-info"><b><span class="text-primary">Description: </span></b><%= @item.description %></div>
@@ -175,7 +177,8 @@
 								<% end %>
 					  		</div>
 					  		<div class="panel-body">
-					    		Further options.
+					    		Further options.<br>
+								form to display all the modifier groups, and a button to check if the particular modifier can be added?
 								<br>
 								<div class="add-button">
 									<%= link_to 'Remove', sel, method: :delete, class: "btn btn-primary btn-xs btn-block", style: "", :remote => true %>
@@ -191,3 +194,294 @@
 <%= render 'form' %>
 
 <%= link_to 'Back', orders_path, class: "btn btn-default" %>
+
+<% else %>
+
+<% if @item.interface==1 %>
+
+<style>
+
+#main {
+			background-color: rgb(255,220,220);
+
+		}
+			
+		#sidebar {
+			background-color: rgb(220,255,220);
+
+		}
+		
+
+
+		.dropzone-wrapper {
+
+		}
+
+		.dropzone {
+
+		}
+
+		.dropzone.-drop-possible { border-color: #666; }
+
+		.dropzone.-drop-over {
+		    background: #666;
+		    color: #fff;
+		}
+
+		.draggable {
+		    position: relative;
+		    z-index: 10;
+		    width: 200px;
+		    margin: .25em;
+		    padding: 1em 2em;
+		    background-color: #29e;
+		    color: #fff;
+		    text-align: center;
+
+		    -ms-touch-action: none;
+		        touch-action: none;
+		}
+
+		.draggable.-drop-possible { background-color: #42bd41; }
+		
+</style>
+
+	
+
+
+	<!--
+	
+	<div class="col-md-3" style="background-color: rgb(220,220,255)">.col-md-1</div>
+	  <div class="col-md-6">
+	  	<div class="row" id="main" style="height:150px;">
+			<div class="col-md-6" id="whole">whole</div>
+		</div>
+		<div class="row" id="sidebar" style="height:300px;">
+		  <div class="col-md-6" id="left" style="background-color: rgb(220,255,220);height:300px;">left</div>
+		  <div class="col-md-6" id="right" style="background-color: rgb(110, 255,110);height:300px;">right</div>
+		</div>
+	  </div>
+	<div class="col-md-3" style="background-color: rgb(220,220,255)">.col-md-1</div>
+	  -->
+	<div style="position: relative;float: none;">
+	
+	<div id="rapper"  style="position: absolute;float: none; left: 0;right: 0;margin: 0 auto;">
+		<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;">whole</div>
+	
+		<div id="left" class="dropzone js-drop" style="background-color: rgb(220,255,220);width:50%;float:left; clear:left;">left</div>
+		<div id="right" class="dropzone js-drop" style="background-color: rgb(110, 255,110);width:50%;float:left;">right</div>
+	</div>
+
+	<div style="position: absolute;float:left;">
+	
+		<div id="drag1" class="draggable js-drag">Drag me…</div>
+		<div id="drag2" class="draggable js-drag">Drag me…</div>
+		<div id="drag3" class="draggable js-drag">Drag me…</div>
+		<div id="drag4" class="draggable js-drag">Drag me…</div>
+	</div>
+</div>
+<script>
+
+var footer;
+
+var orig;
+
+//width around 991 or 992?
+
+var offset = 85; //34 pixels is the arbitrary offset I've used for the navbar, but that's on top of any additional padding
+
+var body = document.body,
+    html = document.documentElement;
+
+var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+//alert("body.scrollHeight: " + body.scrollHeight + " | body.offsetHeight:" + body.offsetHeight + " | html.clientHeight: " + html.clientHeight + " | html.scrollHeight: " + html.scrollHeight + " | html.offsetHeight: " + html.offsetHeight);
+
+//alert(parseInt($(window).height()));
+//alert(parseInt($(window).width()));
+
+
+
+
+
+adjust = function() {
+
+	if(parseInt($(window).width())-30 > (html.clientHeight-offset) ){ 
+		//standard view (with columns)
+
+		//use the lesser value (in this case, the width of the window)
+		var totalHeight = parseInt($(window).height()) - offset;
+		$('#rapper').width(totalHeight);
+		$('#rapper').height(totalHeight);
+
+		$('#whole').height(totalHeight / 3);
+			$('#whole').width(totalHeight);
+		$('#left').height(totalHeight / 3 * 2);
+		$('#left').width(totalHeight / 2);
+		$('#right').height(totalHeight / 3 * 2);
+		$('#right').width(totalHeight / 2);
+
+		//alert(parseInt($('#whole').height()) * parseInt($('#whole').width()) )
+	//	alert(parseInt($('#left').height()) * parseInt($('#left').width()) )
+	}
+	else if(parseInt($(window).width())-30 < (html.clientHeight-offset) ){
+		//option select view
+
+		var totalHeight = parseInt($(window).width()) -30;
+		$('#rapper').width(totalHeight);
+		$('#rapper').height(totalHeight);
+
+		$('#whole').height(totalHeight / 3);
+			$('#whole').width(totalHeight);
+		$('#left').height(totalHeight / 3 * 2);
+		$('#left').width(totalHeight / 2);
+		$('#right').height(totalHeight / 3 * 2);
+		$('#right').width(totalHeight / 2);
+	}
+	
+};
+
+$(document).ready(adjust);
+
+$(document).on('page:load', adjust);
+
+window.addEventListener('resize', adjust);
+
+
+
+//separate
+
+
+(function (interact) {
+
+    'use strict';
+
+    var transformProp;
+
+    interact.maxInteractions(Infinity);
+
+    // setup draggable elements.
+    interact('.js-drag')
+        .draggable({ max: Infinity })
+        .on('dragstart', function (event) {
+            event.interaction.x = parseInt(event.target.getAttribute('data-x'), 10) || 0;
+            event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
+        })
+        .on('dragmove', function (event) {
+            event.interaction.x += event.dx;
+            event.interaction.y += event.dy;
+
+            if (transformProp) {
+                event.target.style[transformProp] =
+                    'translate(' + event.interaction.x + 'px, ' + event.interaction.y + 'px)';
+            }
+            else {
+                event.target.style.left = event.interaction.x + 'px';
+                event.target.style.top  = event.interaction.y + 'px';
+            }
+        })
+        .on('dragend', function (event) {
+            event.target.setAttribute('data-x', event.interaction.x);
+            event.target.setAttribute('data-y', event.interaction.y);
+        });
+
+    // setup drop areas.
+    // dropzone #1 accepts draggable #1
+    setupDropzone('#whole', '#drag1');
+    // dropzone #2 accepts draggable #1 and #2
+    setupDropzone('#left', '#drag1, #drag2');
+    // every dropzone accepts draggable #3
+    setupDropzone('.js-drop', '#drag3');
+
+    /**
+     * Setup a given element as a dropzone.
+     *
+     * @param {HTMLElement|String} el
+     * @param {String} accept
+     */
+    function setupDropzone(el, accept) {
+        interact(el)
+            .dropzone({
+                accept: accept,
+                ondropactivate: function (event) {
+                    addClass(event.relatedTarget, '-drop-possible');
+                },
+                ondropdeactivate: function (event) {
+                    removeClass(event.relatedTarget, '-drop-possible');
+                }
+            })
+            .on('dropactivate', function (event) {
+                var active = event.target.getAttribute('active')|0;
+
+                // change style if it was previously not active
+                if (active === 0) {
+                    addClass(event.target, '-drop-possible');
+                    event.target.textContent = 'Drop me here!';
+                }
+
+                event.target.setAttribute('active', active + 1);
+            })
+            .on('dropdeactivate', function (event) {
+                var active = event.target.getAttribute('active')|0;
+
+                // change style if it was previously active
+                // but will no longer be active
+                if (active === 1) {
+                    removeClass(event.target, '-drop-possible');
+                    event.target.textContent = 'Dropzone';
+                }
+
+                event.target.setAttribute('active', active - 1);
+            })
+            .on('dragenter', function (event) {
+                addClass(event.target, '-drop-over');
+                event.relatedTarget.textContent = 'I\'m in';
+            })
+            .on('dragleave', function (event) {
+                removeClass(event.target, '-drop-over');
+                event.relatedTarget.textContent = 'Drag me…';
+            })
+            .on('drop', function (event) {
+                removeClass(event.target, '-drop-over');
+                event.relatedTarget.textContent = 'Dropped';
+            });
+    }
+
+    function addClass (element, className) {
+        if (element.classList) {
+            return element.classList.add(className);
+        }
+        else {
+            element.className += ' ' + className;
+        }
+    }
+
+    function removeClass (element, className) {
+        if (element.classList) {
+            return element.classList.remove(className);
+        }
+        else {
+            element.className = element.className.replace(new RegExp(className + ' *', 'g'), '');
+        }
+    }
+
+    interact(document).on('ready', function () {
+        transformProp = 'transform' in document.body.style
+            ? 'transform': 'webkitTransform' in document.body.style
+            ? 'webkitTransform': 'mozTransform' in document.body.style
+            ? 'mozTransform': 'oTransform' in document.body.style
+            ? 'oTransform': 'msTransform' in document.body.style
+            ? 'msTransform': null;
+    });
+
+}(window.interact));
+
+</script>
+
+<% else %>
+interface <%= @item.interface %> not yet built
+<% end %>
+
+
+<% end %>
