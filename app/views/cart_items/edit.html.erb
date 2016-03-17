@@ -567,6 +567,27 @@ function toggleHide(value) {
         .on('dragstart', function (event) {
             event.interaction.x = parseInt(event.target.getAttribute('data-x'), 10) || 0;
             event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
+			
+			//alert(event.target.getAttribute('data-scrx'));
+			var x = parseInt(event.target.getAttribute('data-x'));
+			var y = parseInt(event.target.getAttribute('data-y'));
+			var scrx = parseInt(event.target.getAttribute('data-scrx'));
+			var scry = parseInt(event.target.getAttribute('data-scry'));
+			var rapper = parseInt(event.target.getAttribute('data-rapper'));
+			var newScrx = parseInt($(window).width());
+			var newScry =  parseInt($(window).height());
+			var newRapper = parseInt($('#rapper').width());
+			
+			//alert(scrx.toString());
+			
+			
+			
+			if((scrx!=newScrx || scry!=newScry) && !isNaN(scrx) ){
+				// redefine x and y values...
+				event.interaction.x = (x - (scrx - rapper)/2)*(newRapper/rapper) + (newScrx-newRapper)/2;
+				//alert(scry.toString());
+				event.interaction.y = (y) * (newRapper/rapper) + (rapper/(newRapper))/2; // - (newScry/scry)
+			}
 
 			// will want use that scaling stuff that I eventually figure out... 
 			// if data-scr-x is null, would that mean it hasn't been moved yet?
