@@ -359,7 +359,7 @@
 	
 		
 </div>
-<div style="position: absolute;">
+<div style="position: absolute; margin-top:-12px;">
 	<div id="drag1" class="draggable js-drag" >Drag me…</div>
 	<div id="drag2" class="draggable js-drag" >Drag me…</div>
 	<div id="drag3" class="draggable js-drag" >Drag me…</div>
@@ -378,7 +378,7 @@ var orig;
 //width around 991 or 992?
 
 var offset = 85; //34 pixels is the arbitrary offset I've used for the navbar, but that's on top of any additional padding
-
+// 60 + 15, maybe? I can't recall.
 var body = document.body,
     html = document.documentElement;
 
@@ -498,8 +498,8 @@ adjust = function() {
 		var scry = drags[i].dataset.scry;
 		var rapper = drags[i].dataset.rapper;
 		
-		var newScrx = parseInt($(window).width()) -30;
-		var newScry =  parseInt($(window).height()) - offset;
+		var newScrx = parseInt($(window).width());
+		var newScry =  parseInt($(window).height());
 		var newRapper = parseInt($('#rapper').width());
 		
 		// so now I need to figure out where the drop zones start... the container of dropzones...
@@ -508,7 +508,11 @@ adjust = function() {
 		// that SHOULD be the X value that the thing begins at.
 		
 		var newX = (x - (scrx - rapper)/2)*(newRapper/rapper) + (newScrx-newRapper)/2;
-		var newY = y * (newRapper/rapper);
+		//alert(scry.toString());
+		var newY = (y) * (newRapper/rapper) + (rapper/(newRapper))/2; // - (newScry/scry)
+		//rapper/newRapper reverses the effect to about the same degree as when there is no modification/offset at all
+		
+		// gonna hafta (y + something) * newR/r - somethingUsingNewVersionsOfVariables
 		
 		drags[i].style.left = newX + 'px';
 		drags[i].style.top = newY + 'px';
@@ -593,8 +597,8 @@ function toggleHide(value) {
         .on('dragend', function (event) {
             event.target.setAttribute('data-x', event.interaction.x);
             event.target.setAttribute('data-y', event.interaction.y);
-			event.target.setAttribute('data-scrx', parseInt($(window).width()) -30);
-            event.target.setAttribute('data-scry', parseInt($(window).height()) - offset);
+			event.target.setAttribute('data-scrx', parseInt($(window).width()));
+            event.target.setAttribute('data-scry', parseInt($(window).height()));
 			event.target.setAttribute('data-rapper', parseInt($('#rapper').width()));
         });
 
