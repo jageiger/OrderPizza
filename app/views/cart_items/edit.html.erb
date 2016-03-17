@@ -359,7 +359,7 @@
 	
 		
 </div>
-<div style="position: absolute;float:left;">
+<div style="position: absolute;">
 	<div id="drag1" class="draggable js-drag" >Drag me…</div>
 	<div id="drag2" class="draggable js-drag" >Drag me…</div>
 	<div id="drag3" class="draggable js-drag" >Drag me…</div>
@@ -474,6 +474,48 @@ adjust = function() {
 	// that's what I'll adjust.
 	// I have those values stored in the data... data-x, data-y ... and thanks to my modification... 
 	// have the screen size at which it was last moved, too. I think data-scr-x and data-scr-y
+	
+	
+	// THIS CODE DOESN'T NEED TO BE EXECUTED ON LOAD, WHICH MEANS I SHOULD MOVE IT
+	var drags = $('.draggable')
+	var i;
+	for (i = 0; i < drags.length; i++) {
+		//this actually sets the values... just need to figure out the math now...
+	    //drags[i].style.left = 50 + 'px';
+		//drags[i].style.top = 100 + 'px';
+		
+		
+		
+		//how to get
+		//alert(drags[i].dataset.x.toString())
+		
+		//how to set 
+		//drags[i].dataset.x = "base.gif";
+		
+		var x = drags[i].dataset.x;
+		var y = drags[i].dataset.y;
+		var scrx = drags[i].dataset.scrx;
+		var scry = drags[i].dataset.scry;
+		var rapper = drags[i].dataset.rapper;
+		
+		var newScrx = parseInt($(window).width()) -30;
+		var newScry =  parseInt($(window).height()) - offset;
+		var newRapper = parseInt($('#rapper').width());
+		
+		// so now I need to figure out where the drop zones start... the container of dropzones...
+		// get the 'rapper' width || height (they're the same)
+		// get the window width - rapper.w
+		// that SHOULD be the X value that the thing begins at.
+		
+		var newX = (x - (scrx - rapper)/2)*(newRapper/rapper) + (newScrx-newRapper)/2;
+		var newY = y * (newRapper/rapper);
+		
+		drags[i].style.left = newX + 'px';
+		drags[i].style.top = newY + 'px';
+		
+	}
+	
+	
 
 };
 
@@ -521,10 +563,23 @@ function toggleHide(value) {
         .on('dragstart', function (event) {
             event.interaction.x = parseInt(event.target.getAttribute('data-x'), 10) || 0;
             event.interaction.y = parseInt(event.target.getAttribute('data-y'), 10) || 0;
+
+			// will want use that scaling stuff that I eventually figure out... 
+			// if data-scr-x is null, would that mean it hasn't been moved yet?
+			// BTW all this stuff needs to be saved, in the form... on the selected_modifier
+			// so I can recreate the layout when an already configured thing is reopened.
+			
+			//interaction.x needs to be the NEW screen stuff... the top... and left... values...
+			//alert(event.target.getAttribute('left'));
+			// well, just tested it. doesn't work. left and top... are null...
+			
+			// so I'll have to calculate it again, methinks...
+			
         })
         .on('dragmove', function (event) {
             event.interaction.x += event.dx;
             event.interaction.y += event.dy;
+			// this is what is at current messing things up...
 
             if (transformProp) {
                 event.target.style[transformProp] =
@@ -538,8 +593,9 @@ function toggleHide(value) {
         .on('dragend', function (event) {
             event.target.setAttribute('data-x', event.interaction.x);
             event.target.setAttribute('data-y', event.interaction.y);
-			event.target.setAttribute('scr-x', parseInt($(window).width()) -30);
-            event.target.setAttribute('scr-y', parseInt($(window).height()) - offset);
+			event.target.setAttribute('data-scrx', parseInt($(window).width()) -30);
+            event.target.setAttribute('data-scry', parseInt($(window).height()) - offset);
+			event.target.setAttribute('data-rapper', parseInt($('#rapper').width()));
         });
 
     // setup drop areas.
