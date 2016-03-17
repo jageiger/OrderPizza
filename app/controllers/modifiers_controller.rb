@@ -70,6 +70,6 @@ class ModifiersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def modifier_params
-      params.require(:modifier).permit(:name, :alt_name, :price, :use_extras, :rotate, :density, :scale_range_low, :scale_range_high, :file, :file_width, :file_height, :grid_x,  :grid_y)
+      params.require(:modifier).permit(:name, :alt_name, :price, :use_extras, :rotate, :density, :scale_range_low, :scale_range_high, :file, :file_width, :file_height, :grid_x,  :grid_y, :interface_column)
     end
 end

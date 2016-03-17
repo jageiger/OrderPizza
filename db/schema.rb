@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160223235825) do
+ActiveRecord::Schema.define(version: 20160317034011) do
 
   create_table "addresses", force: true do |t|
     t.integer  "user_id"
@@ -150,6 +150,7 @@ ActiveRecord::Schema.define(version: 20160223235825) do
     t.integer  "file_height"
     t.integer  "grid_x"
     t.integer  "grid_y"
+    t.integer  "interface_column"
   end
 
   create_table "orders", force: true do |t|

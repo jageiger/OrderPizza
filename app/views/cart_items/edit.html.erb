@@ -242,6 +242,19 @@
 		        touch-action: none;
 		}
 
+		.display {
+		    position: relative;
+		    z-index: 10;
+		    width: 200px;
+		    margin: .25em;
+		    padding: 1em 2em;
+		    background-color: #29e;
+		    color: #fff;
+		    text-align: center;
+
+		    -ms-touch-action: none;
+		        touch-action: none;
+		}
 		.draggable.-drop-possible { background-color: #42bd41; }
 		
 </style>
@@ -272,14 +285,90 @@
 		<div id="right" class="dropzone js-drop" style="background-color: rgb(110, 255,110);width:50%;float:left;">right</div>
 	</div>
 
-	<div style="position: absolute;float:left;">
-	
-		<div id="drag1" class="draggable js-drag">Drag me…</div>
-		<div id="drag2" class="draggable js-drag">Drag me…</div>
-		<div id="drag3" class="draggable js-drag">Drag me…</div>
-		<div id="drag4" class="draggable js-drag">Drag me…</div>
-	</div>
 </div>
+
+</div>
+
+</div>
+
+</div>
+	
+		<% collection_of_left_mods = [] %>
+		<% collection_of_right_mods = [] %>
+		
+		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
+		<% options.each do |applied_mod_group| %>
+			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id && t.interface_position == 1}%>
+
+			<% modifier_groups.each do |modifier_group| %>
+				<% if modifier_group.child %>
+					<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.parent_modifier_group_id }%>
+				<% else %>
+					<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.id }%>
+				<% end %>
+				
+				<% grouped_modifiers.each do |grouped_modifer| %>
+					<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
+					
+					<% unless ( modifier_group.prevent_incest && (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id}.any?) ) || (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id && t.applied_mod_group_id == modifier_group.id }.any?) %>
+
+
+						<!-- change the display if it is selected... the class or css -->
+					<% end %>
+					<% if modifier.interface_column == 1 %>
+						<% collection_of_left_mods.push modifier %>
+					<% elsif modifier.interface_column == 2 %>
+						<% collection_of_right_mods.push modifier %>
+					<% end %>
+				<% end %>
+			
+			
+			<!-- draw stuff here? -->
+			<% selected_mod = SelectedModifier.new %>
+			<% tempName = modifier_group.name.tr(' ', '_').camelize %>
+			<%= form_for(selected_mod, :remote => true, :html=>{:id=>"#{tempName}", :style=>"" }, validate: true) do |g| %>
+		
+			<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+			<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
+			<%= g.hidden_field :modifier, :value => modifier_group.id %>
+			
+			<%# Okay, so, %>
+			<div style="clear:both;">
+				<div id="left-mods" style="float:left; overflow-y:scroll;height:400px; overflow-x: visible;margin-top: -10px;">
+					<% collection_of_left_mods.each do |mod| %>
+						<div id="mod-<%= mod.id %>" class="display"><%= mod.name %></div>
+					<% end %>
+				</div>
+			
+				<div id="right-mods" style="float:right; overflow-y:scroll;height:400px; overflow-x: visible;margin-top: -10px;">
+					<% collection_of_right_mods.each do |mod| %>
+						<div id="mod-<%= mod.id %>" class="display" ><%= mod.name %></div>
+					<% end %>
+				</div>
+			</div>
+			
+			
+			<% end %>
+			
+			<% end %>
+			
+			
+		<% end %>
+	
+		<%# selected modifiers, for each create a draggable %>
+	
+		
+</div>
+<div style="position: absolute;float:left;">
+	<div id="drag1" class="draggable js-drag" >Drag me…</div>
+	<div id="drag2" class="draggable js-drag" >Drag me…</div>
+	<div id="drag3" class="draggable js-drag" >Drag me…</div>
+	<div id="drag4" class="draggable js-drag" >Drag me…</div>
+</div>
+
+<div class="container containerTwo">
+   <div class="page-header" id="banner">
+    <div class="row">
 <script>
 
 var footer;
@@ -321,7 +410,19 @@ adjust = function() {
 		$('#left').width(totalHeight / 2);
 		$('#right').height(totalHeight / 3 * 2);
 		$('#right').width(totalHeight / 2);
+		
+		/*elements = document.getElementsByClassName('draggable');
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].style.height(totalHeight / 12);
+			elements[i].style.width(totalHeight / 3);
+		}*/
 
+		$('.draggable').css('height',totalHeight / 15);
+		$('.draggable').css('width',totalHeight / 3);
+		
+		$('.draggable').css('font-size',totalHeight / 50);
+		
+		
 		//alert(parseInt($('#whole').height()) * parseInt($('#whole').width()) )
 	//	alert(parseInt($('#left').height()) * parseInt($('#left').width()) )
 	}
@@ -338,8 +439,42 @@ adjust = function() {
 		$('#left').width(totalHeight / 2);
 		$('#right').height(totalHeight / 3 * 2);
 		$('#right').width(totalHeight / 2);
+		
+			$('.draggable').css('height',totalHeight / 15);
+			$('.draggable').css('width',totalHeight / 3);
+
+			$('.draggable').css('font-size',totalHeight / 50);
 	}
+
+	$('#left-mods').height(parseInt($(window).height()) - offset);  
+	$('#right-mods').height(parseInt($(window).height()) - offset);
 	
+	// need to display ALTERNATIVE to columns when the screen is too small for columns.
+	// if width is less than certain number
+	// show hidden div of option select stuff
+	// hide column divs
+	// else case that displays the columns and hides the option selects when screen is big enough
+	
+	
+	//update position for all draggables...
+	//load the data-positions (which will be percentages), convert to coordinates
+	// I don't know if this is possible using screen widths...
+	// I don't think it is ... ?
+	//
+	// let's amend the approach...
+	// convert the percentage... into coordinates relative to the width/height of the zones... 
+	// and then calculate the offset, and add that, yo
+	
+	
+	// see this?
+	/*
+	  event.target.style.left = event.interaction.x + 'px';
+      event.target.style.top  = event.interaction.y + 'px';
+    */
+	// that's what I'll adjust.
+	// I have those values stored in the data... data-x, data-y ... and thanks to my modification... 
+	// have the screen size at which it was last moved, too. I think data-scr-x and data-scr-y
+
 };
 
 $(document).ready(adjust);
@@ -352,6 +487,25 @@ window.addEventListener('resize', adjust);
 
 //separate
 
+/*
+//example 
+function toggleHide(value) {
+  $("#"+value).nextUntil('tr.header').slideToggle(100);
+
+  if($("#"+value).data('toggle-info').toString() == 'false'){
+	$("#"+value+"-button").html("<i class='fa fa-plus-circle'></i>");
+	// $("#"+value+"-minus").hide();
+	// $("#"+value+"-minus").show();
+    $("#"+value).data("toggle-info","true");
+   
+  }
+
+  else{
+	$("#"+value+"-button").html("<i class='fa fa-minus-circle'></i>");
+	$("#"+value).data("toggle-info","false");
+  }
+}
+*/
 
 (function (interact) {
 
@@ -384,6 +538,8 @@ window.addEventListener('resize', adjust);
         .on('dragend', function (event) {
             event.target.setAttribute('data-x', event.interaction.x);
             event.target.setAttribute('data-y', event.interaction.y);
+			event.target.setAttribute('scr-x', parseInt($(window).width()) -30);
+            event.target.setAttribute('scr-y', parseInt($(window).height()) - offset);
         });
 
     // setup drop areas.
@@ -406,9 +562,11 @@ window.addEventListener('resize', adjust);
                 accept: accept,
                 ondropactivate: function (event) {
                     addClass(event.relatedTarget, '-drop-possible');
+					//send form
                 },
                 ondropdeactivate: function (event) {
                     removeClass(event.relatedTarget, '-drop-possible');
+					//this function may not be necessary...
                 }
             })
             .on('dropactivate', function (event) {
