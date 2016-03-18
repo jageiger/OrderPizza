@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317034011) do
+ActiveRecord::Schema.define(version: 20160318015743) do
 
   create_table "addresses", force: true do |t|
     t.integer  "user_id"
@@ -177,6 +177,11 @@ ActiveRecord::Schema.define(version: 20160317034011) do
     t.string   "color"
     t.string   "hue"
     t.integer  "applied_mod_group_id"
+    t.integer  "xpos"
+    t.integer  "ypos"
+    t.integer  "scrx"
+    t.integer  "scry"
+    t.integer  "rapper"
   end
 
   create_table "selected_sizes", force: true do |t|

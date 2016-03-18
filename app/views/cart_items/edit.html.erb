@@ -1,5 +1,25 @@
 <% unless @item.fancy_interface %>
 
+<% unless notice.nil? %>
+	<div class="alert alert-info alert-dismissible" role="alert" onclick="footer">
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <i class="fa fa-info-circle"></i>
+	  <span class="sr-only">Notice:</span>
+	  <%= notice %>
+	</div>
+<% end %>
+
+<% unless alert.nil? %>
+	<div class="alert alert-danger alert-dismissible" role="alert" onclick="footer">
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <i class="fa fa-exclamation-circle"></i>
+	  <span class="sr-only">Alert:</span>
+	  <%= alert %>
+	</div>
+<% end %>
+
+
+
 <h1><%= @item.name %></h1>
 
 	<div class="well bg-info"><b><span class="text-primary">Description: </span></b><%= @item.description %></div>
@@ -255,6 +275,7 @@
 		    -ms-touch-action: none;
 		        touch-action: none;
 		}
+		
 		.draggable.-drop-possible { background-color: #42bd41; }
 		
 </style>
@@ -277,12 +298,30 @@
 	<div class="col-md-3" style="background-color: rgb(220,220,255)">.col-md-1</div>
 	  -->
 	<div style="position: relative;float: none;">
-	
+		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
+
 	<div id="rapper"  style="position: absolute;float: none; left: 0;right: 0;margin: 0 auto;">
-		<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;">whole</div>
-	
-		<div id="left" class="dropzone js-drop" style="background-color: rgb(220,255,220);width:50%;float:left; clear:left;">left</div>
-		<div id="right" class="dropzone js-drop" style="background-color: rgb(110, 255,110);width:50%;float:left;">right</div>
+		<% options.each do |applied_mod_group| %>
+			<%# This actually isn't very good. What about the possibility someone assigns multiple mod_groups with interface_position of one? Then I have overlapping columns, and multiple forms with the same ID. I need a COLUMN_MODS attribute on the CART_ITEM and look ip up that way. This is something I will have to do eventually. %>
+			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
+			
+			<% modifier_groups.each do |group| %>
+		
+				<% if group.interface_position==1 %>
+					<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">whole</div>
+			
+				<% elsif group.interface_position==2 %>
+					<div id="left" class="dropzone js-drop" style="background-color: rgb(220,255,220);width:50%;float:left; clear:left;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">left</div>
+			
+				<% elsif group.interface_position==3 %>
+					<div id="right" class="dropzone js-drop" style="background-color: rgb(110, 255,110);width:50%;float:left;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">right</div>
+				<% end %>
+			
+			<% end %>
+		<% end %>
+		
+		
+			
 	</div>
 
 </div>
@@ -298,7 +337,6 @@
 		
 		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
 		
-		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
 		<% options.each do |applied_mod_group| %>
 			<%# This actually isn't very good. What about the possibility someone assigns multiple mod_groups with interface_position of one? Then I have overlapping columns, and multiple forms with the same ID. I need a COLUMN_MODS attribute on the CART_ITEM and look ip up that way. This is something I will have to do eventually. %>
 			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id && t.interface_position == 1}%>
@@ -333,20 +371,44 @@
 		
 			<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
 			<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
-			<%= g.hidden_field :modifier_id, :value => modifier_group.id, :id => "mod_field" %>
+			<%= g.hidden_field :modifier_id, :value => collection_of_left_mods.first.id, :id => "mod_field" %>
+			
+			<%= g.hidden_field :xpos, :value => 50, :id => "xpos_field" %>
+			<%= g.hidden_field :ypos, :value => 10, :id => "ypos_field" %>
+			<%= g.hidden_field :scrx, :value => 150, :id => "scrx_field" %>
+			<%= g.hidden_field :scry, :value => 150, :id => "scry_field" %>
+			<%= g.hidden_field :rapper, :value => 100, :id => "rapper_field" %>
+			<% puts selected_mods.include?(selected_mods.first) %>
 			
 			<%# Okay, so, %>
 			<div style="clear:both;">
 				<div id="left-mods" style="float:left; overflow-y:scroll;height:400px; overflow-x: visible;margin-top: -10px;">
 					<% collection_of_left_mods.each do |mod| %>
+				
+						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
 						<div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><%= mod.name %></div>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
+						
+						<% else %>
+							<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;" onclick="destroy(<%= mod.id %>);"><%= mod.name %></div>
+						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
+						<% end %>
+						
 					<% end %>
 				</div>
 			
 				<div id="right-mods" style="float:right; overflow-y:scroll;height:400px; overflow-x: visible;margin-top: -10px;">
 					<% collection_of_right_mods.each do |mod| %>
-						<div id="mod-<%= mod.id %>" class="display" ><%= mod.name %></div>
+				
+						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
+						<div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><%= mod.name %></div>
+						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
+						
+						<% else %>
+							<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;" onclick="destroy(<%= mod.id %>);"><%= mod.name %></div>
+						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
+						<% end %>
+						
 					<% end %>
 				</div>
 			</div>
@@ -372,9 +434,21 @@
 		<% selected_mods.each_with_index do |sel, i| %>
 			<% mod = Modifier.find(sel.modifier_id) %>
 			<%# I'm guessing that the form needs to send the selected_modifier the x y screenx scry and rapper stuff, so I can do the calculation... and default the modifier to the center of the screen. NEED TO SET UP DROP ZONES TO RECEIVE EACH DRAGGABLE. %>
-			<div id="drag-<%= mod.id %>" class="draggable js-drag" ><%= mod.name %></div>
+			<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><%= mod.name %></div>
 			<!-- also need to ... give the user the instruction to drag it around (because it won't automatically be part of a group)
 			maybe it should say, instead of the topping name "Drag me!" and then change color and display the proper name at that point. -->
+			
+			<%= form_for(sel, :remote => true, :html=>{:id=>"form-#{sel.id}", :style=>"" }, validate: true) do |g| %>
+				<%= g.hidden_field :applied_mod_group_id, :value => sel.applied_mod_group_id, :id=>"group-#{sel.id}" %>
+				<%= g.hidden_field :xpos, :value => sel.xpos, :id=>"xpos-#{sel.id}" %>
+				<%= g.hidden_field :ypos, :value => sel.ypos, :id=>"ypos-#{sel.id}" %>
+				<%= g.hidden_field :scrx, :value => sel.scrx, :id=>"scrx-#{sel.id}" %>
+				<%= g.hidden_field :scry, :value => sel.scry, :id=>"scry-#{sel.id}" %>
+				<%= g.hidden_field :rapper, :value => sel.rapper, :id=>"rapper-#{sel.id}" %>
+				
+			<% end %>
+			
+			
 		<% end %>
 	
 
@@ -504,11 +578,16 @@ adjust = function() {
 		//how to set 
 		//drags[i].dataset.x = "base.gif";
 		
+		
+		
 		var x = drags[i].dataset.x;
 		var y = drags[i].dataset.y;
 		var scrx = drags[i].dataset.scrx;
 		var scry = drags[i].dataset.scry;
 		var rapper = drags[i].dataset.rapper;
+		
+		
+	
 		
 		var newScrx = parseInt($(window).width());
 		var newScry =  parseInt($(window).height());
@@ -633,6 +712,7 @@ function toggleHide(value) {
 			event.target.setAttribute('data-scrx', parseInt($(window).width()));
             event.target.setAttribute('data-scry', parseInt($(window).height()));
 			event.target.setAttribute('data-rapper', parseInt($('#rapper').width()));
+			
         });
 
     // setup drop areas.
@@ -643,7 +723,7 @@ function toggleHide(value) {
 	//setup each dropzone to accept each draggable.
 	// when they are created, I'll need to give them unique IDs, and then use those IDs here to look them up.
 
-	  setupDropzone('.js-drop', '<% selected_mods.each_with_index do |sel, i| %>#drag-<%= sel.modifier_id %><% if i < selected_mods.count - 1 %>, <% end %><% end %>');
+	  setupDropzone('.js-drop', '<% selected_mods.each_with_index do |sel, i| %>#drag-<%= sel.id %><% if i < selected_mods.count - 1 %>, <% end %><% end %>');
 
 	
 	
@@ -698,9 +778,36 @@ function toggleHide(value) {
                 event.relatedTarget.textContent = 'Drag me…';
             })
             .on('drop', function (event) {
-                removeClass(event.target, '-drop-over');
-                event.relatedTarget.textContent = 'Dropped';
+                
 				// now how do I determine which dropzone it is? left right or whole?
+				
+//				alert(event.relatedTarget.getAttribute('data-x'));
+				//alert(event.interaction.x);
+			
+				var selId = event.relatedTarget.getAttribute('data-sel');
+				
+				//alert(event.target.getAttribute('data-gid'));
+
+	//				alert(selId);
+
+				//alert(event.target.getAttribute('data-x'));
+
+				//alert($('#xpos-'+selId).val());
+				$('#xpos-'+selId).val(event.interaction.x);
+				$('#ypos-'+selId).val(event.interaction.y);
+				$('#scrx-'+selId).val(parseInt($(window).width()));
+				$('#scry-'+selId).val(parseInt($(window).height()));
+				$('#rapper-'+selId).val(parseInt($('#rapper').width())); 
+				
+				$('#group-'+selId).val(event.target.getAttribute('data-gid')); 
+				
+				// get form by id... then submit...
+				// then redraw everything, SO IT NEEDS TO BECOME A PARTIAL... I can just refresh for now?
+				$('#form-'+selId).submit();
+				
+				removeClass(event.target, '-drop-over');
+                event.relatedTarget.textContent = event.target.getAttribute('data-pn') + ' '+ event.relatedTarget.getAttribute('data-mn');
+				
             });
     }
 
@@ -736,6 +843,13 @@ function toggleHide(value) {
 function clicky(id){
 	//alert(id);
 	document.getElementById('mod_field').value=id;
+	document.getElementById('xpos_field').value=50;
+	document.getElementById('ypos_field').value=10;
+	document.getElementById('scrx_field').value=150;
+	document.getElementById('scry_field').value=150;
+	document.getElementById('rapper_field').value=100;
+	
+
 	// get form by id... then submit...
 	// then redraw everything, SO IT NEEDS TO BECOME A PARTIAL... I can just refresh for now?
 	$('#fancyForm').submit();

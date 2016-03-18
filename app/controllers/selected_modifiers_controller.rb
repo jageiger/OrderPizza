@@ -81,6 +81,6 @@ class SelectedModifiersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def selected_modifier_params
-      params.require(:selected_modifier).permit(:item_id, :cart_item_id, :modifier_id, :applied_mod_group_id)
+      params.require(:selected_modifier).permit(:item_id, :cart_item_id, :modifier_id, :applied_mod_group_id, :xpos, :ypos, :scrx, :scry, :rapper)
     end
 end
