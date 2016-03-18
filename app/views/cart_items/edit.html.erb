@@ -296,8 +296,11 @@
 		<% collection_of_left_mods = [] %>
 		<% collection_of_right_mods = [] %>
 		
+		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
+		
 		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
 		<% options.each do |applied_mod_group| %>
+			<%# This actually isn't very good. What about the possibility someone assigns multiple mod_groups with interface_position of one? Then I have overlapping columns, and multiple forms with the same ID. I need a COLUMN_MODS attribute on the CART_ITEM and look ip up that way. This is something I will have to do eventually. %>
 			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id && t.interface_position == 1}%>
 
 			<% modifier_groups.each do |modifier_group| %>
@@ -326,17 +329,18 @@
 			<!-- draw stuff here? -->
 			<% selected_mod = SelectedModifier.new %>
 			<% tempName = modifier_group.name.tr(' ', '_').camelize %>
-			<%= form_for(selected_mod, :remote => true, :html=>{:id=>"#{tempName}", :style=>"" }, validate: true) do |g| %>
+			<%= form_for(selected_mod, :remote => true, :html=>{:id=>"fancyForm", :style=>"" }, validate: true) do |g| %>
 		
 			<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
 			<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
-			<%= g.hidden_field :modifier, :value => modifier_group.id %>
+			<%= g.hidden_field :modifier_id, :value => modifier_group.id, :id => "mod_field" %>
 			
 			<%# Okay, so, %>
 			<div style="clear:both;">
 				<div id="left-mods" style="float:left; overflow-y:scroll;height:400px; overflow-x: visible;margin-top: -10px;">
 					<% collection_of_left_mods.each do |mod| %>
-						<div id="mod-<%= mod.id %>" class="display"><%= mod.name %></div>
+						<div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><%= mod.name %></div>
+						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 					<% end %>
 				</div>
 			
@@ -360,11 +364,19 @@
 		
 </div>
 <div style="position: absolute; margin-top:-12px;">
-	<div id="drag1" class="draggable js-drag" >Drag me…</div>
-	<div id="drag2" class="draggable js-drag" >Drag me…</div>
-	<div id="drag3" class="draggable js-drag" >Drag me…</div>
-	<div id="drag4" class="draggable js-drag" >Drag me…</div>
-</div>
+	<%# as long as the top and left match the data... and the screen sizes... I can set the default position...%>
+	<!-- <div id="drag1" class="draggable js-drag" style="" data-draggable="100px" data-x="150" data-y="50" data-scrx="200" data-scry="200" data-draggable="100">Drag me…</div> -->
+	<!-- I can't start working on this until I have the selected modifiers... because I need the button click event to trigger some javascript that will position it for me -->
+	
+	
+		<% selected_mods.each_with_index do |sel, i| %>
+			<% mod = Modifier.find(sel.modifier_id) %>
+			<%# I'm guessing that the form needs to send the selected_modifier the x y screenx scry and rapper stuff, so I can do the calculation... and default the modifier to the center of the screen. NEED TO SET UP DROP ZONES TO RECEIVE EACH DRAGGABLE. %>
+			<div id="drag-<%= mod.id %>" class="draggable js-drag" ><%= mod.name %></div>
+			<!-- also need to ... give the user the instruction to drag it around (because it won't automatically be part of a group)
+			maybe it should say, instead of the topping name "Drag me!" and then change color and display the proper name at that point. -->
+		<% end %>
+	
 
 <div class="container containerTwo">
    <div class="page-header" id="banner">
@@ -625,12 +637,16 @@ function toggleHide(value) {
 
     // setup drop areas.
     // dropzone #1 accepts draggable #1
-    setupDropzone('#whole', '#drag1');
-    // dropzone #2 accepts draggable #1 and #2
-    setupDropzone('#left', '#drag1, #drag2');
-    // every dropzone accepts draggable #3
-    setupDropzone('.js-drop', '#drag3');
+ 
 
+
+	//setup each dropzone to accept each draggable.
+	// when they are created, I'll need to give them unique IDs, and then use those IDs here to look them up.
+
+	  setupDropzone('.js-drop', '<% selected_mods.each_with_index do |sel, i| %>#drag-<%= sel.modifier_id %><% if i < selected_mods.count - 1 %>, <% end %><% end %>');
+
+	
+	
     /**
      * Setup a given element as a dropzone.
      *
@@ -684,6 +700,7 @@ function toggleHide(value) {
             .on('drop', function (event) {
                 removeClass(event.target, '-drop-over');
                 event.relatedTarget.textContent = 'Dropped';
+				// now how do I determine which dropzone it is? left right or whole?
             });
     }
 
@@ -715,6 +732,14 @@ function toggleHide(value) {
     });
 
 }(window.interact));
+
+function clicky(id){
+	//alert(id);
+	document.getElementById('mod_field').value=id;
+	// get form by id... then submit...
+	// then redraw everything, SO IT NEEDS TO BECOME A PARTIAL... I can just refresh for now?
+	$('#fancyForm').submit();
+}
 
 </script>
 
