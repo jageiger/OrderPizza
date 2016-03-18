@@ -693,8 +693,16 @@ function toggleHide(value) {
 			
         })
         .on('dragmove', function (event) {
+	
+			<%# something is going wrong here... %>
+			<% if request.referer == orders_url %>
+			
             event.interaction.x += event.dx;
             event.interaction.y += event.dy;
+			<% else %>
+			 event.interaction.x += event.dx;
+             event.interaction.y += event.dy;
+			<% end %>
 			// this is what is at current messing things up...
 
             if (transformProp) {
