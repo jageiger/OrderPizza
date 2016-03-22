@@ -232,6 +232,9 @@
 		}
 		
 
+		#drops{
+			top:-200px;
+		}
 
 		.dropzone-wrapper {
 
@@ -297,7 +300,7 @@
 	  </div>
 	<div class="col-md-3" style="background-color: rgb(220,220,255)">.col-md-1</div>
 	  -->
-	<div style="position: relative;float: none;">
+	<div style="position: relative;float: none; z-index:1;" >
 		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
 
 	<div id="rapper"  style="position: absolute;float: none; left: 0;right: 0;margin: 0 auto;">
@@ -308,7 +311,7 @@
 			<% modifier_groups.each do |group| %>
 		
 				<% if group.interface_position==1 %>
-					<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">whole</div>
+					<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;text-align:center;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>"><a class="activator" id="activator">Options</a></div>
 			
 				<% elsif group.interface_position==2 %>
 					<div id="left" class="dropzone js-drop" style="background-color: rgb(220,255,220);width:50%;float:left; clear:left;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">left</div>
@@ -334,6 +337,8 @@
 	
 		<% collection_of_left_mods = [] %>
 		<% collection_of_right_mods = [] %>
+		<% collection_of_left_options = [] %>
+		<% collection_of_right_options = [] %>
 		
 		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
 		
@@ -351,10 +356,14 @@
 				<% grouped_modifiers.each do |grouped_modifer| %>
 					<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
 					
-					<% unless ( modifier_group.prevent_incest && (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id}.any?) ) || (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id && t.applied_mod_group_id == modifier_group.id }.any?) %>
+					<% unless ( modifier_group.prevent_incest && (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id}.any?) ) || (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id }.any?) %>
+						<% if modifier.interface_column == 1 %>
+							<% collection_of_left_options.push modifier %>
+						<% elsif modifier.interface_column == 2 %>
+							<% collection_of_right_options.push modifier %>
+						<% end %>
 
-
-						<!-- change the display if it is selected... the class or css -->
+						
 					<% end %>
 					<% if modifier.interface_column == 1 %>
 						<% collection_of_left_mods.push modifier %>
@@ -378,10 +387,11 @@
 			<%= g.hidden_field :scrx, :value => 150, :id => "scrx_field" %>
 			<%= g.hidden_field :scry, :value => 150, :id => "scry_field" %>
 			<%= g.hidden_field :rapper, :value => 100, :id => "rapper_field" %>
-			<% puts selected_mods.include?(selected_mods.first) %>
+			
+			
 			
 			<%# Okay, so, %>
-			<div style="clear:both;">
+			<div style="clear:both;" id="cols">
 				<div id="left-mods" style="float:left; overflow-y:scroll;height:400px; overflow-x: visible;margin-top: -10px;">
 					<% collection_of_left_mods.each do |mod| %>
 				
@@ -416,6 +426,76 @@
 			
 			<% end %>
 			
+			<% # end of first form ? %>
+			
+			
+			
+			
+			<% selected_mod_drop = SelectedModifier.new %>
+		<div id="drops" style=" position: relative; z-index:100;background-color:#FFFFFF;box-shadow: 0px 0px 5px 0px #888888;">
+			<div style="padding:10px;">
+				<a class="boxclose" id="boxclose">dismiss</a>
+			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#aDropForm", :style=>"" }, validate: true) do |g| %>
+			<b>Meats</b><br>
+			  <% if(collection_of_left_options.any?) %>
+	  			
+				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
+				
+				<%= g.hidden_field :xpos, :value => 50 %>
+				<%= g.hidden_field :ypos, :value => 10 %>
+				<%= g.hidden_field :scrx, :value => 150 %>
+				<%= g.hidden_field :scry, :value => 150 %>
+				<%= g.hidden_field :rapper, :value => 100 %>
+				<div id="aError"></div>
+				
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_left_options, 'id', 'name'), { :prompt => "Select Meats" }, :id => "#aSelect", onchange: " if ( $( '#aSelect' ).val()=='' )
+	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#aDropForm').submit(); $('#aError').html(''); }", class: "form-control" %>
+	
+				<% else %>
+				
+				<div id="aError"></div>
+
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_left_options, 'id', 'name'), { :prompt => "All Meats selected." }, :id => "#aSelect", :disabled => "disabled", onchange: " if ( $( '#aSelect' ).val()=='' )
+	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#aDropForm').submit(); $('#aError').html(''); }", class: "form-control" %>
+
+				<% end %>
+				
+			  
+			
+			<% end %>
+			
+			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#bDropForm", :style=>"" }, validate: true) do |g| %>
+			<b>Veggies</b><br>
+			  <% if(collection_of_right_options.any?) %>
+	  			
+				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
+				
+				<%= g.hidden_field :xpos, :value => 50 %>
+				<%= g.hidden_field :ypos, :value => 10 %>
+				<%= g.hidden_field :scrx, :value => 150 %>
+				<%= g.hidden_field :scry, :value => 150 %>
+				<%= g.hidden_field :rapper, :value => 100 %>
+				<div id="bError"></div>
+				
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_right_options, 'id', 'name'), { :prompt => "Select Veggies" }, :id => "#bSelect", onchange: " if ( $( '#bSelect' ).val()=='' )
+	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#bDropForm').submit(); $('#bError').html(''); }", class: "form-control" %>
+	
+				<% else %>
+				
+				<div id="aError"></div>
+
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_right_options, 'id', 'name'), { :prompt => "All Veggies selected." }, :id => "#bSelect", :disabled => "disabled", onchange: " if ( $( '#bSelect' ).val()=='' )
+	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#bDropForm').submit(); $('#bError').html(''); }", class: "form-control" %>
+
+				<% end %>
+				
+			  
+			
+			<% end %>
+			</div></div>
+			
 			<% end %>
 			
 			
@@ -434,7 +514,16 @@
 		<% selected_mods.each_with_index do |sel, i| %>
 			<% mod = Modifier.find(sel.modifier_id) %>
 			<%# I'm guessing that the form needs to send the selected_modifier the x y screenx scry and rapper stuff, so I can do the calculation... and default the modifier to the center of the screen. NEED TO SET UP DROP ZONES TO RECEIVE EACH DRAGGABLE. %>
-			<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><%= mod.name %></div>
+			
+			
+  	
+			
+			<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %>
+			<% if grup.child %>
+				<%= grup.prepend_name %> <%= mod.name %>
+			<% else %>
+    			<%= mod.name %>
+			<% end %></div>
 			<!-- also need to ... give the user the instruction to drag it around (because it won't automatically be part of a group)
 			maybe it should say, instead of the topping name "Drag me!" and then change color and display the proper name at that point. -->
 			
@@ -452,7 +541,7 @@
 		<% end %>
 	
 
-<div class="container containerTwo">
+<div class="container containerTwo" style="display:none;">
    <div class="page-header" id="banner">
     <div class="row">
 <script>
@@ -535,6 +624,33 @@ adjust = function() {
 	$('#left-mods').height(parseInt($(window).height()) - offset);  
 	$('#right-mods').height(parseInt($(window).height()) - offset);
 	
+	//$('#whole').text(parseInt($(window).width()));
+	
+	var wi = parseInt($(window).width());
+	if(wi < 1010 && wi >= 850){
+document.getElementById("cols").style.display = 'block';
+document.getElementById("drops").style.display = 'none';
+document.getElementById("activator").style.display = 'none';
+	
+		$('.display').css('width', 	(wi - parseInt($('#rapper').width()) - 20) / 2);
+
+		$('.display').css('font-size',wi / 100);
+	}
+	else if (wi < 850 ){
+		document.getElementById("cols").style.display = 'none';
+		document.getElementById("drops").style.display = 'block';
+		document.getElementById("activator").style.display = 'block';
+	
+	}
+	else{
+		document.getElementById("cols").style.display = 'block';
+		document.getElementById("activator").style.display = 'none';
+		document.getElementById("drops").style.display = 'none';
+		$('.display').css('width', 	200);
+
+		$('.display').css('font-size',14);
+	}
+	
 	// need to display ALTERNATIVE to columns when the screen is too small for columns.
 	// if width is less than certain number
 	// show hidden div of option select stuff
@@ -604,6 +720,10 @@ adjust = function() {
 		//rapper/newRapper reverses the effect to about the same degree as when there is no modification/offset at all
 		
 		// gonna hafta (y + something) * newR/r - somethingUsingNewVersionsOfVariables
+		
+		if(wi < 850 ){
+			newY = newY - parseInt($('#drops').height());
+		}
 		
 		drags[i].style.left = newX + 'px';
 		drags[i].style.top = newY + 'px';
@@ -677,7 +797,15 @@ function toggleHide(value) {
 				// redefine x and y values...
 				event.interaction.x = (x - (scrx - rapper)/2)*(newRapper/rapper) + (newScrx-newRapper)/2;
 				//alert(scry.toString());
-				event.interaction.y = (y) * (newRapper/rapper) + (rapper/(newRapper))/2; // - (newScry/scry)
+				var newY = (y) * (newRapper/rapper) + (rapper/(newRapper))/2;
+				
+				if(newScrx < 850){
+				//	newY = newY - parseInt($('#drops').height());
+				}
+				
+				event.interaction.y = newY;
+				
+				
 			}
 
 			// will want use that scaling stuff that I eventually figure out... 
@@ -705,18 +833,45 @@ function toggleHide(value) {
 			<% end %>
 			// this is what is at current messing things up...
 
+			var widt = parseInt($(window).width());
+			
             if (transformProp) {
-                event.target.style[transformProp] =
-                    'translate(' + event.interaction.x + 'px, ' + event.interaction.y + 'px)';
+				
+				if(widt < 850){
+					event.target.style[transformProp] =
+	                    'translate(' + event.interaction.x + 'px, ' + (event.interaction.y - parseInt($('#drops').height())) + 'px)';
+				}
+				else{
+					event.target.style[transformProp] =
+	                    'translate(' + event.interaction.x + 'px, ' + event.interaction.y + 'px)';
+				}
+				
+				 //event.target.style[transformProp] = 'translate(' + event.interaction.x + 'px, ' + event.interaction.y + 'px)';
+                
             }
             else {
-                event.target.style.left = event.interaction.x + 'px';
-                event.target.style.top  = event.interaction.y + 'px';
+				event.target.style.left = event.interaction.x + 'px';
+				if(widt < 850){
+					event.target.style.top  = (event.interaction.y - parseInt($('#drops').height())) + 'px';
+				}
+				else{
+					event.target.style.top  = event.interaction.y + 'px';
+				}
+	
+                
+                //event.target.style.top  = event.interaction.y + 'px';
+				
             }
         })
         .on('dragend', function (event) {
             event.target.setAttribute('data-x', event.interaction.x);
-            event.target.setAttribute('data-y', event.interaction.y);
+            
+			var why = event.interaction.y;
+			var wid = parseInt($(window).width());
+			if(wid < 850){
+			//	why = why + parseInt($('#drops').height());
+			}
+			event.target.setAttribute('data-y', why);
 			event.target.setAttribute('data-scrx', parseInt($(window).width()));
             event.target.setAttribute('data-scry', parseInt($(window).height()));
 			event.target.setAttribute('data-rapper', parseInt($('#rapper').width()));
@@ -760,7 +915,7 @@ function toggleHide(value) {
                 // change style if it was previously not active
                 if (active === 0) {
                     addClass(event.target, '-drop-possible');
-                    event.target.textContent = 'Drop me here!';
+                    //event.target.textContent = 'Drop me here!';
                 }
 
                 event.target.setAttribute('active', active + 1);
@@ -772,7 +927,7 @@ function toggleHide(value) {
                 // but will no longer be active
                 if (active === 1) {
                     removeClass(event.target, '-drop-possible');
-                    event.target.textContent = 'Dropzone';
+                    //event.target.textContent = 'Dropzone';
                 }
 
                 event.target.setAttribute('active', active - 1);
@@ -862,6 +1017,21 @@ function clicky(id){
 	// then redraw everything, SO IT NEEDS TO BECOME A PARTIAL... I can just refresh for now?
 	$('#fancyForm').submit();
 }
+
+
+$(function() {
+                $('#activator').click(function(){
+		/*	var hei = parseInt($(window).height());
+			var dro = parseInt($('#drops').height());
+			var pos = (hei - dro)/2;
+                    $('#drops').animate({'top':pos+'px'},500); */
+					$('#drops').animate({'top':'-22px'},500);
+                });
+                $('#boxclose').click(function(){
+                    $('#drops').animate({'top':'-200px'},500);
+                });
+
+            });
 
 </script>
 
