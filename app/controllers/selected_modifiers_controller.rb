@@ -1,6 +1,7 @@
 class SelectedModifiersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_selected_modifier, only: [:show, :edit, :update, :destroy]
+ # protect_from_forgery except: :create
 
   # GET /selected_modifiers
   # GET /selected_modifiers.json

@@ -233,7 +233,7 @@
 		
 
 		#drops{
-			top:-200px;
+			top:-300px;
 		}
 
 		.dropzone-wrapper {
@@ -387,6 +387,7 @@
 			<%= g.hidden_field :scrx, :value => 150, :id => "scrx_field" %>
 			<%= g.hidden_field :scry, :value => 150, :id => "scry_field" %>
 			<%= g.hidden_field :rapper, :value => 100, :id => "rapper_field" %>
+			<%= g.submit nil, :class => 'btn btn-primary', :name => 'main', :style => 'display:none;' %>
 			
 			
 			
@@ -438,7 +439,7 @@
 			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#aDropForm", :style=>"" }, validate: true) do |g| %>
 			<b>Meats</b><br>
 			  <% if(collection_of_left_options.any?) %>
-	  			
+	  			<%= g.hidden_field :authenticity_token, :value => form_authenticity_token %>
 				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
 				<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
 				
@@ -448,24 +449,25 @@
 				<%= g.hidden_field :scry, :value => 150 %>
 				<%= g.hidden_field :rapper, :value => 100 %>
 				<div id="aError"></div>
-				
+					<%= g.submit nil, :class => 'btn btn-primary', :name => 'updateA', :style => 'display:none;' %>
 				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_left_options, 'id', 'name'), { :prompt => "Select Meats" }, :id => "#aSelect", onchange: " if ( $( '#aSelect' ).val()=='' )
-	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#aDropForm').submit(); $('#aError').html(''); }", class: "form-control" %>
+	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>');} else { $( this ).trigger('submit.rails'); $('#aError').html(''); }", class: "form-control" %>
+
 	
 				<% else %>
 				
 				<div id="aError"></div>
 
 				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_left_options, 'id', 'name'), { :prompt => "All Meats selected." }, :id => "#aSelect", :disabled => "disabled", onchange: " if ( $( '#aSelect' ).val()=='' )
-	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#aDropForm').submit(); $('#aError').html(''); }", class: "form-control" %>
+	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>'); } else { $( this ).trigger('submit.rails'); $('#aError').html(''); }", class: "form-control" %>
 
 				<% end %>
 				
 			  
 			
 			<% end %>
-			
-			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#bDropForm", :style=>"" }, validate: true) do |g| %>
+			<% selected_mod_drop_two = SelectedModifier.new %>
+			<%= form_for(selected_mod_drop_two, :remote => true, :html=>{:id=>"#bDropForm", :style=>"" }, validate: true) do |g| %>
 			<b>Veggies</b><br>
 			  <% if(collection_of_right_options.any?) %>
 	  			
@@ -478,16 +480,16 @@
 				<%= g.hidden_field :scry, :value => 150 %>
 				<%= g.hidden_field :rapper, :value => 100 %>
 				<div id="bError"></div>
-				
+				<%= g.submit nil, :class => 'btn btn-primary', :name => 'updateB', :style => 'display:none;' %>
 				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_right_options, 'id', 'name'), { :prompt => "Select Veggies" }, :id => "#bSelect", onchange: " if ( $( '#bSelect' ).val()=='' )
-	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#bDropForm').submit(); $('#bError').html(''); }", class: "form-control" %>
+	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $( this ).trigger('submit.rails'); $('#bError').html(''); }", class: "form-control" %>
 	
 				<% else %>
 				
 				<div id="aError"></div>
 
 				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_right_options, 'id', 'name'), { :prompt => "All Veggies selected." }, :id => "#bSelect", :disabled => "disabled", onchange: " if ( $( '#bSelect' ).val()=='' )
-	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $('#bDropForm').submit(); $('#bError').html(''); }", class: "form-control" %>
+	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $( this ).trigger('submit.rails'); $('#bError').html(''); }", class: "form-control" %>
 
 				<% end %>
 				
@@ -534,7 +536,7 @@
 				<%= g.hidden_field :scrx, :value => sel.scrx, :id=>"scrx-#{sel.id}" %>
 				<%= g.hidden_field :scry, :value => sel.scry, :id=>"scry-#{sel.id}" %>
 				<%= g.hidden_field :rapper, :value => sel.rapper, :id=>"rapper-#{sel.id}" %>
-				
+				<%= g.submit nil, :class => 'btn btn-primary', :name => 'selSub', :style => 'display:none;' %>
 			<% end %>
 			
 			
@@ -1028,7 +1030,7 @@ $(function() {
 					$('#drops').animate({'top':'-22px'},500);
                 });
                 $('#boxclose').click(function(){
-                    $('#drops').animate({'top':'-200px'},500);
+                    $('#drops').animate({'top':'-300px'},500);
                 });
 
             });
