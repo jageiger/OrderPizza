@@ -252,7 +252,7 @@
 		}
 
 		.draggable {
-		    position: relative;
+		    position: absolute;
 		    z-index: 10;
 		    width: 200px;
 		    margin: .25em;
@@ -1021,7 +1021,7 @@ function toggleHide(value) {
 function clicky(id){
 	//alert(id);
 	document.getElementById('mod_field').value=id;
-	document.getElementById('xpos_field').value=50;
+	document.getElementById('xpos_field').value=50 + <%= SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }.count %>;
 	document.getElementById('ypos_field').value=10;
 	document.getElementById('scrx_field').value=150;
 	document.getElementById('scry_field').value=150;
