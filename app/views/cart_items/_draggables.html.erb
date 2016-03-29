@@ -1,0 +1,174 @@
+<% @ca = s_mod %>
+<% @cart_item = CartItem.find(@ca.cart_item_id) %>
+
+<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
+
+
+	<% selected_mods.each_with_index do |sel, i| %>
+		<% mod = Modifier.find(sel.modifier_id) %>
+		<%# I'm guessing that the form needs to send the selected_modifier the x y screenx scry and rapper stuff, so I can do the calculation... and default the modifier to the center of the screen. NEED TO SET UP DROP ZONES TO RECEIVE EACH DRAGGABLE. %>
+		
+		
+
+		
+		<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %>
+		<% if grup.child %>
+			<%= grup.prepend_name %> <%= mod.name %>
+		<% else %>
+			<%= mod.name %>
+		<% end %></div>
+		<!-- also need to ... give the user the instruction to drag it around (because it won't automatically be part of a group)
+		maybe it should say, instead of the topping name "Drag me!" and then change color and display the proper name at that point. -->
+		
+		<%= form_for(sel, :remote => true, :html=>{:id=>"form-#{sel.id}", :style=>"" }, validate: true) do |g| %>
+			<%= g.hidden_field :applied_mod_group_id, :value => sel.applied_mod_group_id, :id=>"group-#{sel.id}" %>
+			<%= g.hidden_field :xpos, :value => sel.xpos, :id=>"xpos-#{sel.id}" %>
+			<%= g.hidden_field :ypos, :value => sel.ypos, :id=>"ypos-#{sel.id}" %>
+			<%= g.hidden_field :scrx, :value => sel.scrx, :id=>"scrx-#{sel.id}" %>
+			<%= g.hidden_field :scry, :value => sel.scry, :id=>"scry-#{sel.id}" %>
+			<%= g.hidden_field :rapper, :value => sel.rapper, :id=>"rapper-#{sel.id}" %>
+			<%= g.submit nil, :class => 'btn btn-primary', :name => 'selSub', :style => 'display:none;' %>
+		<% end %>
+		
+		
+	<% end %> 
+
+<div>
+</div>
+
+	<script>
+
+	(function (interact) {
+
+	    'use strict';
+
+	    var transformProp;
+
+	    interact.maxInteractions(Infinity);
+
+	    // setup drop areas.
+	    // dropzone #1 accepts draggable #1
+
+
+
+		//setup each dropzone to accept each draggable.
+		// when they are created, I'll need to give them unique IDs, and then use those IDs here to look them up.
+
+		  setupDropzone('.js-drop', '<% selected_mods.each_with_index do |sel, i| %>#drag-<%= sel.id %><% if i < selected_mods.count - 1 %>, <% end %><% end %>');
+
+
+
+	    /**
+	     * Setup a given element as a dropzone.
+	     *
+	     * @param {HTMLElement|String} el
+	     * @param {String} accept
+	     */
+	    function setupDropzone(el, accept) {
+	        interact(el)
+	            .dropzone({
+	                accept: accept,
+	                ondropactivate: function (event) {
+	                    addClass(event.relatedTarget, '-drop-possible');
+						//send form
+	                },
+	                ondropdeactivate: function (event) {
+	                    removeClass(event.relatedTarget, '-drop-possible');
+						//this function may not be necessary...
+	                }
+	            })
+	            .on('dropactivate', function (event) {
+	                var active = event.target.getAttribute('active')|0;
+
+	                // change style if it was previously not active
+	                if (active === 0) {
+	                    addClass(event.target, '-drop-possible');
+	                    //event.target.textContent = 'Drop me here!';
+	                }
+
+	                event.target.setAttribute('active', active + 1);
+	            })
+	            .on('dropdeactivate', function (event) {
+	                var active = event.target.getAttribute('active')|0;
+
+	                // change style if it was previously active
+	                // but will no longer be active
+	                if (active === 1) {
+	                    removeClass(event.target, '-drop-possible');
+	                    //event.target.textContent = 'Dropzone';
+	                }
+
+	                event.target.setAttribute('active', active - 1);
+	            })
+	            .on('dragenter', function (event) {
+	                addClass(event.target, '-drop-over');
+	                event.relatedTarget.textContent = 'I\'m in';
+	            })
+	            .on('dragleave', function (event) {
+	                removeClass(event.target, '-drop-over');
+	                event.relatedTarget.textContent = 'Drag me…';
+	            })
+	            .on('drop', function (event) {
+
+					// now how do I determine which dropzone it is? left right or whole?
+
+	//				alert(event.relatedTarget.getAttribute('data-x'));
+					//alert(event.interaction.x);
+
+					var selId = event.relatedTarget.getAttribute('data-sel');
+
+					//alert(event.target.getAttribute('data-gid'));
+
+		//				alert(selId);
+
+					//alert(event.target.getAttribute('data-x'));
+
+					//alert($('#xpos-'+selId).val());
+					$('#xpos-'+selId).val(event.interaction.x);
+					$('#ypos-'+selId).val(event.interaction.y);
+					$('#scrx-'+selId).val(parseInt($(window).width()));
+					$('#scry-'+selId).val(parseInt($(window).height()));
+					$('#rapper-'+selId).val(parseInt($('#rapper').width())); 
+
+					$('#group-'+selId).val(event.target.getAttribute('data-gid')); 
+
+					// get form by id... then submit...
+					// then redraw everything, SO IT NEEDS TO BECOME A PARTIAL... I can just refresh for now?
+					$('#form-'+selId).submit();
+
+					removeClass(event.target, '-drop-over');
+	                event.relatedTarget.textContent = event.target.getAttribute('data-pn') + ' '+ event.relatedTarget.getAttribute('data-mn');
+
+	            });
+	    }
+
+	    function addClass (element, className) {
+	        if (element.classList) {
+	            return element.classList.add(className);
+	        }
+	        else {
+	            element.className += ' ' + className;
+	        }
+	    }
+
+	    function removeClass (element, className) {
+	        if (element.classList) {
+	            return element.classList.remove(className);
+	        }
+	        else {
+	            element.className = element.className.replace(new RegExp(className + ' *', 'g'), '');
+	        }
+	    }
+
+	    interact(document).on('ready', function () {
+	        transformProp = 'transform' in document.body.style
+	            ? 'transform': 'webkitTransform' in document.body.style
+	            ? 'webkitTransform': 'mozTransform' in document.body.style
+	            ? 'mozTransform': 'oTransform' in document.body.style
+	            ? 'oTransform': 'msTransform' in document.body.style
+	            ? 'msTransform': null;
+	    });
+
+	}(window.interact));
+
+	</script>

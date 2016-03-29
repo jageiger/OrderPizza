@@ -525,7 +525,7 @@
 	<!-- <div id="drag1" class="draggable js-drag" style="" data-draggable="100px" data-x="150" data-y="50" data-scrx="200" data-scry="200" data-draggable="100">Drag me…</div> -->
 	<!-- I can't start working on this until I have the selected modifiers... because I need the button click event to trigger some javascript that will position it for me -->
 	
-	
+	<div id="draggies">
 		<% selected_mods.each_with_index do |sel, i| %>
 			<% mod = Modifier.find(sel.modifier_id) %>
 			<%# I'm guessing that the form needs to send the selected_modifier the x y screenx scry and rapper stuff, so I can do the calculation... and default the modifier to the center of the screen. NEED TO SET UP DROP ZONES TO RECEIVE EACH DRAGGABLE. %>
@@ -553,7 +553,7 @@
 			<% end %>
 			
 			
-		<% end %>
+		<% end %> </div>
 	
 
 <div class="container containerTwo" style="display:none;">
