@@ -334,6 +334,8 @@
 </div>
 
 </div>
+
+<div id="columns">
 	
 		<% collection_of_left_mods = [] %>
 		<% collection_of_right_mods = [] %>
@@ -403,7 +405,7 @@
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;" onclick="destroy(<%= mod.id %>);"><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;"><%= mod.name %></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -421,7 +423,7 @@
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;" onclick="destroy(<%= mod.id %>);"><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;"><%= mod.name %></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -514,7 +516,8 @@
 		<% end %>
 	
 		<%# selected modifiers, for each create a draggable %>
-	
+		
+</div>
 		
 </div>
 <div style="position: absolute; margin-top:-12px;">
