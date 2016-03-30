@@ -115,7 +115,7 @@
 			<div style="padding:10px;">
 				
 				
-				<a class="boxclose" id="boxclose">dismiss</a>
+				<a class="boxclose" id="boxclose" onclick="closeBruh();">dismiss</a>
 			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#aDropForm", :style=>"" }, validate: true) do |g| %>
 			<b>Meats</b><br>
 			  <% if(collection_of_left_options.any?) %>

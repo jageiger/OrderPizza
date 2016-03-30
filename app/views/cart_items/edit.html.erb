@@ -304,6 +304,8 @@
 		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
 
 	<div id="rapper"  style="position: absolute;float: none; left: 0;right: 0;margin: 0 auto;">
+		
+		
 		<% options.each do |applied_mod_group| %>
 			<%# This actually isn't very good. What about the possibility someone assigns multiple mod_groups with interface_position of one? Then I have overlapping columns, and multiple forms with the same ID. I need a COLUMN_MODS attribute on the CART_ITEM and look ip up that way. This is something I will have to do eventually. %>
 			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
@@ -311,7 +313,23 @@
 			<% modifier_groups.each do |group| %>
 		
 				<% if group.interface_position==1 %>
-					<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;text-align:center;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>"><a class="activator" id="activator">Options</a></div>
+					<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;text-align:center;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">
+						
+						<div style="position:absolute;">
+							<%= image_tag("crust.svg", alt: "Edit Entry", id: "crust") %>
+						</div>
+						<div style="position:absolute;">
+							<%= image_tag("sauce.svg", alt: "Edit Entry", id: "sauce") %>
+						</div>
+						<div style="position:absolute;">
+							<%= image_tag("cheese.svg", alt: "Edit Entry", id: "cheese") %>
+						</div>
+						
+
+					</div>
+					<div style="position:absolute;">
+						<a class="activator" id="activator">Options</a>
+					</div>
 			
 				<% elsif group.interface_position==2 %>
 					<div id="left" class="dropzone js-drop" style="background-color: rgb(220,255,220);width:50%;float:left; clear:left;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">left</div>
@@ -321,6 +339,9 @@
 				<% end %>
 			
 			<% end %>
+			
+			
+
 		<% end %>
 		
 		
@@ -447,7 +468,7 @@
 			<div style="padding:10px;">
 				
 				
-				<a class="boxclose" id="boxclose">dismiss</a>
+				<a class="boxclose" id="boxclose" onclick="closeBruh();">dismiss</a>
 			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#aDropForm", :style=>"" }, validate: true) do |g| %>
 			<b>Meats</b><br>
 			  <% if(collection_of_left_options.any?) %>
@@ -745,7 +766,9 @@ document.getElementById("activator").style.display = 'none';
 		
 	}
 	
-	
+	$('#crust').height($('#rapper').height());
+	$('#sauce').height($('#rapper').height());
+	$('#cheese').height($('#rapper').height());
 
 };
 
@@ -1047,6 +1070,10 @@ $(function() {
                 });
 
             });
+
+function closeBruh(){
+	$('#drops').animate({'top':'-300px'},500);
+}
 
 </script>
 
