@@ -301,6 +301,7 @@
 	<div class="col-md-3" style="background-color: rgb(220,220,255)">.col-md-1</div>
 	  -->
 	<div style="position: relative;float: none; z-index:1;" >
+		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
 		<% options = AppliedModGroup.all.select{ |t| t.item_id == @item.id } %>
 
 	<div id="rapper"  style="position: absolute;float: none; left: 0;right: 0;margin: 0 auto;">
@@ -310,10 +311,16 @@
 			<%# This actually isn't very good. What about the possibility someone assigns multiple mod_groups with interface_position of one? Then I have overlapping columns, and multiple forms with the same ID. I need a COLUMN_MODS attribute on the CART_ITEM and look ip up that way. This is something I will have to do eventually. %>
 			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id }%>
 			
+				
+				
+			
 			<% modifier_groups.each do |group| %>
 		
 				<% if group.interface_position==1 %>
+					
+				
 					<div id="whole" class="dropzone js-drop" style="background-color: rgb(255,220,220);height:300px;text-align:center;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">
+						
 						
 						<div style="position:absolute;">
 							<%= image_tag("crust.svg", alt: "Edit Entry", id: "crust") %>
@@ -324,7 +331,16 @@
 						<div style="position:absolute;">
 							<%= image_tag("cheese.svg", alt: "Edit Entry", id: "cheese") %>
 						</div>
-						
+						<div id="toppins" style="position:absolute;">
+
+							<% selected_mods.each_with_index do |sel, i| %>
+								<% mod = Modifier.find(sel.modifier_id) %>
+								<div id="tops-<%= sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>">
+								<!-- maybe useful :data => {:name => 'Stephen', .. } -->
+								<% image_tag "#{mod.file}", :class => "top-#{sel.id}", :style => "position:absolute" %>
+								</div>
+							<% end %>
+						</div>
 
 					</div>
 					<div style="position:absolute;">
@@ -363,7 +379,7 @@
 		<% collection_of_left_options = [] %>
 		<% collection_of_right_options = [] %>
 		
-		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
+		
 		
 		<% options.each do |applied_mod_group| %>
 			<%# This actually isn't very good. What about the possibility someone assigns multiple mod_groups with interface_position of one? Then I have overlapping columns, and multiple forms with the same ID. I need a COLUMN_MODS attribute on the CART_ITEM and look ip up that way. This is something I will have to do eventually. %>
@@ -420,7 +436,7 @@
 					<% collection_of_left_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><%= mod.name %></div></a>
+						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><%# image_tag "#{mod.file}", :class => "" %> <%= mod.name %></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
@@ -554,7 +570,7 @@
 			
   	
 			
-			<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %>
+			<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %><%# image_tag "#{mod.file}", :class => "" %>
 			<% if grup.child %>
 				<%= grup.prepend_name %> <%= mod.name %>
 			<% else %>
@@ -575,7 +591,7 @@
 			
 			
 		<% end %> </div>
-	
+
 
 <div class="container containerTwo" style="display:none;">
    <div class="page-header" id="banner">
@@ -603,6 +619,26 @@ var height = Math.max( body.scrollHeight, body.offsetHeight,
 
 
 
+function getTops(){
+	var tops = $('.toppin')
+	var l;
+	for (l = 0; l < tops.length; l++) {
+		var eyedee = tops[l].id;
+		var file = tops[l].dataset.file;
+		var widf = tops[l].dataset.w;
+		var hyt = tops[l].dataset.h;
+		var rotate = tops[l].dataset.rotate;
+		var density = tops[l].dataset.density;
+		var slow = tops[l].dataset.slow;
+		var sigh = tops[l].dataset.sigh;
+		
+		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh);
+		
+		
+	}
+}
+
+getTops();
 
 
 adjust = function() {
@@ -715,6 +751,10 @@ document.getElementById("activator").style.display = 'none';
 	
 	
 	// THIS CODE DOESN'T NEED TO BE EXECUTED ON LOAD, WHICH MEANS I SHOULD MOVE IT
+	var newScrx = parseInt($(window).width());
+	var newScry =  parseInt($(window).height());
+	var newRapper = parseInt($('#rapper').width());
+	
 	var drags = $('.draggable')
 	var i;
 	for (i = 0; i < drags.length; i++) {
@@ -741,9 +781,7 @@ document.getElementById("activator").style.display = 'none';
 		
 	
 		
-		var newScrx = parseInt($(window).width());
-		var newScry =  parseInt($(window).height());
-		var newRapper = parseInt($('#rapper').width());
+		
 		
 		// so now I need to figure out where the drop zones start... the container of dropzones...
 		// get the 'rapper' width || height (they're the same)
@@ -769,6 +807,36 @@ document.getElementById("activator").style.display = 'none';
 	$('#crust').height($('#rapper').height());
 	$('#sauce').height($('#rapper').height());
 	$('#cheese').height($('#rapper').height());
+	
+	var tops = $('.tahp')
+	var l;
+	for (l = 0; l < tops.length; l++) {
+		var x = tops[l].dataset.x;
+		var y = tops[l].dataset.y;
+		var scrx = tops[l].dataset.scrx;
+		var scry = tops[l].dataset.scry;
+		var rapper = tops[l].dataset.rapper;
+		var w = tops[l].dataset.width;
+		var h = tops[l].dataset.height;
+
+		
+		var newX = (x)*(newRapper/rapper);
+		var newY = (y) * (newRapper/rapper); // - (newScry/scry)
+		
+		
+		
+	
+		
+		tops[l].style.left = newX + 'px';
+		tops[l].style.top = newY + 'px';
+		tops[l].width = w * (newRapper/rapper);
+		tops[l].height = h * (newRapper/rapper);
+		
+		
+		
+	}
+	
+	//then scale 'em like the draggables... pretty much reuse that code?
 
 };
 
@@ -777,7 +845,6 @@ $(document).ready(adjust);
 $(document).on('page:load', adjust);
 
 window.addEventListener('resize', adjust);
-
 
 
 //separate
@@ -1073,6 +1140,66 @@ $(function() {
 
 function closeBruh(){
 	$('#drops').animate({'top':'-300px'},500);
+}
+
+function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh){
+	
+	
+	//so I have to make THREE different modes. WHOLE, LEFT, and RIGHT.
+	//Right now, I'll pretend that what I have is for the WHOLE, even though it's the RIGHT (sort of)
+	//There's origin issues... that's why I have to make the modes different...
+	//So right now, I'm going to work on the origin for the WHOLE, even though the rest of the code is for the RIGHT
+	
+	//I think one way to do this, is to have three different POPULATE functions, and call them dynamically on the RAILS side
+	
+	var windowHeight = 600;
+	var artHeight = hyt;
+	
+	var density = 1.2;
+
+
+	var numDown = Math.floor( (windowHeight / (density * artHeight)) );
+	var yoffset = (windowHeight % (density * artHeight)) / numDown;
+	var densityAdjustment = Math.abs(density * artHeight - artHeight)/2;
+	var c = 0; 
+	
+	
+	//will need different checks for each of the incoming values, if blank, sets a default!!!
+	if (numDown == Number.POSITIVE_INFINITY || numDown == Number.NEGATIVE_INFINITY) {
+	    return;
+	}
+	
+	
+	//alert(eyedee);
+	
+	for(var i=0; i<numDown; i++){
+		
+	      if( i<numDown/2 ){
+	        var numNodes = Math.floor( ((numDown-(i*2)) * (Math.PI / 2)) ); 
+	        for(var j=0; j<numNodes; j++){
+	          
+	          var degree = Math.PI/(numNodes-1);
+
+	          var targetY = ((numDown-i-1)*artHeight*density)+((numDown-i-1)*yoffset*density)+densityAdjustment;
+	          var originY = (i*artHeight*density)+(i*yoffset*density)+densityAdjustment;
+	          var r = Math.abs(targetY - originY)/2;
+	          var y = r * Math.cos(j*degree) + 475; // 225 number from illustator layout
+	          var x = r * Math.sin(j*degree) + 475;
+	          
+	
+	
+			  $('#'+eyedee).append("<img class='tahp' src='"+file+"' data-width='" + widf + "' data-height='" + hyt + "' data-x='" + x + "' data-y='" + y + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
+	         // ellipse(x,y+(windowHeight/2)-(artHeight/2),artHeight, artHeight);
+	        }
+	      }
+
+	      if (numDown%2!=0){ //if it is odd the center topping still needs to be drawn!
+	        var k = Math.round(numDown/2);
+	        //ellipse(0,(k*artHeight*density)+(k*yoffset*density)+densityAdjustment,artHeight, artHeight);
+	      }
+	
+		
+	} 
 }
 
 </script>
