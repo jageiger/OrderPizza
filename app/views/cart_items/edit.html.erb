@@ -1171,6 +1171,8 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 	var artHeight = hyt;
 	
 	//var density = 1;
+//	alert(slow=="");
+	
 
 
 	var numDown = Math.floor( (windowHeight / (density * artHeight)) );
@@ -1248,8 +1250,40 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 			  
 	          
 			  if(!isNaN(x)||!isNaN(y)){
-	
-			  $('#'+eyedee).append("<img class='tahp' src='"+file+"' data-width='" + widf + "' data-height='" + hyt + "' data-x='" + x + "' data-y='" + y + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
+				
+				/*
+				$('img').each(function() {
+				    var deg = $(this).data('rotate') || 0;
+				    var rotate = 'rotate(' + $(this).data('rotate') + 'deg)';
+				    $(this).css({ 
+				        '-webkit-transform': rotate,
+				        '-moz-transform': rotate,
+				        '-o-transform': rotate,
+				        '-ms-transform': rotate,
+				        'transform': rotate 
+				    });
+				});
+				*/
+				
+				
+		
+			var rotateString = "";
+			var scaleString = "' data-width='" + widf + "' data-height='" + hyt;
+			
+			if(rotate=="true"){
+				var degri = Math.floor(Math.random() * (360));
+			    rotateString = "' data-rotate='"+ degri;
+			}
+			if(slow!="" && sigh!=""){
+				var newSize = widf * ( Math.random() * (parseFloat(sigh) - parseFloat(slow)) + parseFloat(slow) );
+			//	var newSize = widf * ((Math.random() * (parseFloat(sigh) - parseFloat(slow) + 1)) + parseFloat(slow));
+				scaleString = "' data-width='" + newSize + "' data-height='" + newSize;
+			}
+			
+				  $('#'+eyedee).append("<img class='tahp' src='"+file + scaleString + "' data-x='" + x + "' data-y='" + y + rotateString + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
+			
+			
+			
 			}
 	         // ellipse(x,y+(windowHeight/2)-(artHeight/2),artHeight, artHeight);
 	        }
@@ -1276,6 +1310,18 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
       }
 }
 
+
+$('img').each(function() {
+    var deg = $(this).data('rotate') || 0;
+    var rotate = 'rotate(' + $(this).data('rotate') + 'deg)';
+    $(this).css({ 
+        '-webkit-transform': rotate,
+        '-moz-transform': rotate,
+        '-o-transform': rotate,
+        '-ms-transform': rotate,
+        'transform': rotate 
+    });
+});
 </script>
 
 <% else %>
