@@ -442,7 +442,7 @@
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;"><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;" onclick="deletey(<%= smod.id %>);"><%= mod.name %></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -460,7 +460,7 @@
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;"><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display" style="background-color:#42bd41;" onclick="deletey(<%= smod.id %>);"><%= mod.name %></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -650,6 +650,44 @@ function getTops(){
 			populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,2);
 		}
 	}
+}
+
+function getSpecificTop(id){
+//	alert("called!");
+	var whole = $('#whole').data('gid');
+	var left = $('#left').data('gid');
+	var right = $('#right').data('gid');
+
+	var file = $('#tops-'+id).data("file");
+	var widf = $('#tops-'+id).data("w");
+	var hyt = $('#tops-'+id).data("h");
+	var rotate = $('#tops-'+id).data("rotate");
+	var density = $('#tops-'+id).data("density");
+	var slow = $('#tops-'+id).data("slow");
+	var sigh = $('#tops-'+id).data("sigh");
+	var parent = $('#tops-'+id).data("parent");
+
+	var eyedee = "";
+	eyedee = "tops-"+id;
+//	alert(rotate==true);
+	
+	if(parent==whole){
+		//alert("working so far");
+		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,0);
+	//	alert("broken?");
+	
+
+	}
+	else if(parent==left){
+	//	alert("left!");
+		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,1);
+		
+	}
+	else if(parent==right){
+	//	alert("rrr!");
+		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,2);
+	}
+	adjust();
 }
 
 getTops();
@@ -1138,6 +1176,16 @@ function clicky(id){
 	$('#fancyForm').submit();
 }
 
+function deletey(id){
+	$('#tops-'+id).remove();
+}
+
+function cleary(id){
+	$('#tops-'+id).empty();
+}
+
+
+
 
 $(function() {
                 $('#activator').click(function(){
@@ -1173,7 +1221,6 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 	//var density = 1;
 //	alert(slow=="");
 	
-
 
 	var numDown = Math.floor( (windowHeight / (density * artHeight)) );
 	var yoffset = (windowHeight % (density * artHeight)) / numDown;
@@ -1214,6 +1261,9 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 	
 	var extra = false;
 	
+
+	
+	
 	for(var i=0; i<numDown; i++){
 		
 	      if( i<numDown/2 ){
@@ -1226,7 +1276,8 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 				extra = true;
 
 			}
-
+			
+			
 	
 	
 	        for(var j=0; j<jVal; j++){
@@ -1269,10 +1320,14 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 		
 			var rotateString = "";
 			var scaleString = "' data-width='" + widf + "' data-height='" + hyt;
-			
-			if(rotate=="true"){
+		//	if(i==0 && j==0){
+		//		alert(rotate==true);
+		//	}
+			if(rotate=="true" || rotate==true){
 				var degri = Math.floor(Math.random() * (360));
 			    rotateString = "' data-rotate='"+ degri;
+			
+				
 			}
 			if(slow!="" && sigh!=""){
 				var newSize = widf * ( Math.random() * (parseFloat(sigh) - parseFloat(slow)) + parseFloat(slow) );
@@ -1280,7 +1335,12 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 				scaleString = "' data-width='" + newSize + "' data-height='" + newSize;
 			}
 			
+			
+			
 				  $('#'+eyedee).append("<img class='tahp' src='"+file + scaleString + "' data-x='" + x + "' data-y='" + y + rotateString + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
+				/*if(widf=="75" && i==0 && j==0){
+					alert("pep");
+				}*/
 			
 			
 			
@@ -1311,7 +1371,7 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 }
 
 
-$('img').each(function() {
+function artRots() {$('img').each(function() {
     var deg = $(this).data('rotate') || 0;
     var rotate = 'rotate(' + $(this).data('rotate') + 'deg)';
     $(this).css({ 
@@ -1322,6 +1382,8 @@ $('img').each(function() {
         'transform': rotate 
     });
 });
+}
+artRots();
 </script>
 
 <% else %>

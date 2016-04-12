@@ -2,3 +2,13 @@ $("#selected_modifiers").html("<%= escape_javascript(render partial: "cart_items
 $("#modifier_groups").html("<%= escape_javascript(render partial: "cart_items/groups", locals: { s_mod: @selected_modifier }).html_safe %>");
 $("#draggies").html("<%= escape_javascript(render partial: "cart_items/draggables", locals: { s_mod: @selected_modifier }).html_safe %>");
 $("#columns").html("<%= escape_javascript(render partial: "cart_items/columns", locals: { s_mod: @selected_modifier }).html_safe %>");
+
+//first check if there is an existing div for that id? wait, no, it's split up with different methods (create won't have an existing div to replace!)
+//replace on edit
+//destroy on destroy
+
+// tops- @selected_modifier.id 
+
+// create, I want to first append the div? IDK how I want to do this...
+
+$("#toppins").append("<%= escape_javascript(render partial: "cart_items/toppin", locals: { s_mod: @selected_modifier }).html_safe %>");

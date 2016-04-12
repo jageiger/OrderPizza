@@ -1,0 +1,13 @@
+<% @sel = s_mod %>
+<% mod = Modifier.find(@sel.modifier_id) %>
+
+<div id="tops-<%= @sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= @sel.applied_mod_group_id %>">
+<script>
+$('#tops-'+<%= @sel.id %>).data("parent",<%= @sel.applied_mod_group_id %>);
+cleary(<%= @sel.id %>);
+getSpecificTop(<%= @sel.id %>);
+artRots();
+
+
+//some populate variant</script>
+</div>
