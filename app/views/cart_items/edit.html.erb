@@ -1349,8 +1349,8 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode,count,modeC
 
 	var numDown = Math.floor( (windowHeight / (density * artHeight)) );
 	
-	if ((count%2==0 && numDown>3)){
-	//	alert(mode+" - "+modeCount); // so, the mode count doesn't work. that's chill. it's because i'm ending up with duplicate DIVS when the toppings are 'edited' or 'updated' or whatever
+	if ((count%2==0 && numDown>3) && (modeCount>1)){
+	//	alert(mode+" - "+modeCount); // so, the mode count doesn't work. that's chill. it's because i'm ending up with duplicate DIVS when the toppings are 'edited' or 'updated' or whatever .... GOT MODE COUNT TO WORK NOW
 		windowHeight -= artHeight*density;
 		numDown = Math.floor( (windowHeight / (density * artHeight)) );
 	}
