@@ -331,6 +331,7 @@
 						<div style="position:absolute;">
 							<%= image_tag("cheese.svg", alt: "Edit Entry", id: "cheese") %>
 						</div>
+
 						<div id="toppins" style="position:absolute;">
 
 							<% selected_mods.each_with_index do |sel, i| %>
@@ -341,11 +342,18 @@
 								</div>
 							<% end %>
 						</div>
+						<div style="position:absolute;">
+							<%= image_tag("whole.svg", alt: "Edit Entry", id: "whole-sel", style: "display:none;") %>
+						</div>
+						<div style="position:absolute;">
+							<%= image_tag("left.svg", alt: "Edit Entry", id: "left-sel", style: "display:none;") %>
+						</div>
+						<div style="position:absolute;">
+							<%= image_tag("right.svg", alt: "Edit Entry", id: "right-sel", style: "display:none;") %>
+						</div>
 
 					</div>
-					<div style="position:absolute;">
-						<a class="activator" id="activator">Options</a>
-					</div>
+
 			
 				<% elsif group.interface_position==2 %>
 					<div id="left" class="dropzone js-drop" style="background-color: rgb(220,255,220);width:50%;float:left; clear:left;" data-gid="<%= group.id %>" data-pn="<%= group.prepend_name %>">left</div>
@@ -356,12 +364,14 @@
 			
 			<% end %>
 			
-			
+
 
 		<% end %>
 		
 		
-			
+		<div id="opt-div" style="background-color: rgb(110, 110,225);width:100%">
+			<a class="activator" id="activator">Options</a>
+		</div>	
 	</div>
 
 </div>
@@ -740,6 +750,18 @@ adjust = function() {
 
 		//use the lesser value (in this case, the width of the window)
 		var totalHeight = parseInt($(window).height()) - offset;
+		var realTotal = totalHeight;
+		
+		if (parseInt($(window).width()) < 850 ){
+		totalHeight = totalHeight * 0.9;
+		$('#opt-div').height(realTotal*0.1);
+		$('#opt-div').css('margin-top',totalHeight / 3 * 2);
+		$('#opt-div').css('font-size',totalHeight / 20);
+		}
+		else{
+			$('#opt-div').height(0);
+		}
+		
 		$('#rapper').width(totalHeight);
 		$('#rapper').height(totalHeight);
 
@@ -769,6 +791,11 @@ adjust = function() {
 		//option select view
 
 		var totalHeight = parseInt($(window).width()) -30;
+		
+			if (parseInt($(window).width()) < 850 ){
+		//	totalHeight = totalHeight * 0.9;
+			}
+		
 		$('#rapper').width(totalHeight);
 		$('#rapper').height(totalHeight);
 
@@ -899,6 +926,9 @@ document.getElementById("activator").style.display = 'none';
 	$('#crust').height($('#rapper').height());
 	$('#sauce').height($('#rapper').height());
 	$('#cheese').height($('#rapper').height());
+	$('#whole-sel').height($('#rapper').height());
+	$('#left-sel').height($('#rapper').height());
+	$('#right-sel').height($('#rapper').height());
 	
 	var tops = $('.tahp')
 	var l;
@@ -1061,6 +1091,9 @@ function toggleHide(value) {
             }
         })
         .on('dragend', function (event) {
+	
+			//hide all things... yo
+			
             event.target.setAttribute('data-x', event.interaction.x);
             
 			var why = event.interaction.y;
@@ -1132,13 +1165,60 @@ function toggleHide(value) {
             .on('dragenter', function (event) {
                 addClass(event.target, '-drop-over');
                 event.relatedTarget.textContent = 'I\'m in';
+				//show appropriate bg
+				
+				
+				var whole = $('#whole').data('gid');
+				var left = $('#left').data('gid');
+				var right = $('#right').data('gid');
+//				var parent  = $('#tops-'+event.relatedTarget.getAttribute('data-sel')).data('parent');
+				var parent  = event.target.getAttribute('data-gid');
+
+				
+			//	alert(parent+" - "+whole);
+				if(parent==whole){
+				//	alert("whole!");
+					document.getElementById("whole-sel").style.display = 'block';
+				}
+				else if(parent==left){
+					document.getElementById("left-sel").style.display = 'block';					
+				}
+				else if(parent==right){
+					document.getElementById("right-sel").style.display = 'block';
+				}
+				
             })
             .on('dragleave', function (event) {
                 removeClass(event.target, '-drop-over');
                 event.relatedTarget.textContent = 'Drag me…';
+				//hide bg
+					var whole = $('#whole').data('gid');
+					var left = $('#left').data('gid');
+					var right = $('#right').data('gid');
+					var parent  = event.target.getAttribute('data-gid');
+
+				//	alert(parent+" - "+whole);
+					if(parent==whole){
+					//	alert("whole!");
+						document.getElementById("whole-sel").style.display = 'none';
+					}
+					else if(parent==left){
+						document.getElementById("left-sel").style.display = 'none';					
+					}
+					else if(parent==right){
+						document.getElementById("right-sel").style.display = 'none';
+					}
+				
             })
             .on('drop', function (event) {
-                
+                //hide ALL bgs
+				document.getElementById("whole-sel").style.display = 'none';
+			
+				document.getElementById("left-sel").style.display = 'none';		
+				document.getElementById("right-sel").style.display = 'none';
+
+
+
 				// now how do I determine which dropzone it is? left right or whole?
 				
 //				alert(event.relatedTarget.getAttribute('data-x'));
