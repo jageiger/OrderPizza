@@ -1,4 +1,4 @@
 $("#selected_modifiers").html("<%= escape_javascript(render partial: "cart_items/modifiers", locals: { s_mod: @selected_modifier }).html_safe %>");
 $("#modifier_groups").html("<%= escape_javascript(render partial: "cart_items/groups", locals: { s_mod: @selected_modifier }).html_safe %>");
 $("#draggies").html("<%= escape_javascript(render partial: "cart_items/draggables", locals: { s_mod: @selected_modifier }).html_safe %>");
-$("#columns").html("<%= escape_javascript(render partial: "cart_items/columns", locals: { s_mod: @selected_modifier }).html_safe %>");
+$("#columns").html("<%= escape_javascript(render partial: "cart_items/columns", locals: { s_mod: @selected_modifier, del: true }).html_safe %>");

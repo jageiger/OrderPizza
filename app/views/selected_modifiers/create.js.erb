@@ -11,4 +11,4 @@ $("#columns").html("<%= escape_javascript(render partial: "cart_items/columns", 
 
 // create, I want to first append the div? IDK how I want to do this...
 
-$("#toppins").append("<%= escape_javascript(render partial: "cart_items/toppin", locals: { s_mod: @selected_modifier }).html_safe %>");
+$("#toppins").append("<%= escape_javascript(render partial: "cart_items/toppin", locals: { s_mod: @selected_modifier, del: false }).html_safe %>");

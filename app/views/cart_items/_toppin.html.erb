@@ -1,10 +1,13 @@
 <% @sel = s_mod %>
 <% mod = Modifier.find(@sel.modifier_id) %>
 
-<div id="tops-<%= @sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= @sel.applied_mod_group_id %>">
+<div id="tops-<%= @sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= @sel.applied_mod_group_id %>" data-count="<%= SelectedModifier.all.select{ |t| t.cart_item_id == @sel.cart_item_id }.count %>">
 <script>
 $('#tops-'+<%= @sel.id %>).data("parent",<%= @sel.applied_mod_group_id %>);
 cleary(<%= @sel.id %>);
+<% if del=="true" %>
+alert("deletey");
+<% end %>
 getSpecificTop(<%= @sel.id %>);
 artRots();
 

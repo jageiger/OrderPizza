@@ -335,7 +335,7 @@
 
 							<% selected_mods.each_with_index do |sel, i| %>
 								<% mod = Modifier.find(sel.modifier_id) %>
-								<div id="tops-<%= sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= sel.applied_mod_group_id %>">
+								<div id="tops-<%= sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= sel.applied_mod_group_id %>" data-count="<%= i+1 %>">
 								<!-- maybe useful :data => {:name => 'Stephen', .. } -->
 								<% image_tag "#{mod.file}", :class => "top-#{sel.id}", :style => "position:absolute" %>
 								</div>
@@ -625,6 +625,23 @@ function getTops(){
 	var whole = $('#whole').data('gid');
 	var left = $('#left').data('gid');
 	var right = $('#right').data('gid');
+	var wholeModeCount = 0;
+	var leftModeCount = 0;
+	var rightModeCount = 0;
+	
+	for (var q = 0; q < tops.length; q++) {
+		var parent = tops[q].dataset.parent;
+		
+		if(parent==whole){
+			wholeModeCount++;
+		}
+		else if(parent==left){
+			leftModeCount++;
+		}
+		else if(parent==right){
+			rightModeCount++;
+		}
+	}
 	
 	for (l = 0; l < tops.length; l++) {
 		var eyedee = tops[l].id;
@@ -636,27 +653,49 @@ function getTops(){
 		var slow = tops[l].dataset.slow;
 		var sigh = tops[l].dataset.sigh;
 		var parent = tops[l].dataset.parent;
-
+		var count = tops[l].dataset.count;
 		
 		if(parent==whole){
-			populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,0);
+			populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,0,count,wholeModeCount);
 
 		}
 		else if(parent==left){
-			populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,1);
+			populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,1,count,leftModeCount);
 			
 		}
 		else if(parent==right){
-			populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,2);
+			populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,2,count,rightModeCount);
 		}
 	}
 }
 
 function getSpecificTop(id){
 //	alert("called!");
+	var tops = $('.toppin')
+	
 	var whole = $('#whole').data('gid');
 	var left = $('#left').data('gid');
 	var right = $('#right').data('gid');
+
+	var wholeModeCount = 0;
+	var leftModeCount = 0;
+	var rightModeCount = 0;
+	
+	for (q = 0; q < tops.length; q++) {
+		var parent = tops[q].dataset.parent;
+		
+		if(parent==whole){
+			wholeModeCount++;
+		}
+		else if(parent==left){
+			leftModeCount++;
+		}
+		else if(parent==right){
+			rightModeCount++;
+		}
+	}
+	
+
 
 	var file = $('#tops-'+id).data("file");
 	var widf = $('#tops-'+id).data("w");
@@ -666,6 +705,7 @@ function getSpecificTop(id){
 	var slow = $('#tops-'+id).data("slow");
 	var sigh = $('#tops-'+id).data("sigh");
 	var parent = $('#tops-'+id).data("parent");
+	var count = $('#tops-'+id).data("count");
 
 	var eyedee = "";
 	eyedee = "tops-"+id;
@@ -673,19 +713,19 @@ function getSpecificTop(id){
 	
 	if(parent==whole){
 		//alert("working so far");
-		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,0);
+		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,0,count,wholeModeCount);
 	//	alert("broken?");
 	
 
 	}
 	else if(parent==left){
 	//	alert("left!");
-		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,1);
+		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,1,count,leftModeCount);
 		
 	}
 	else if(parent==right){
 	//	alert("rrr!");
-		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,2);
+		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,2,count,rightModeCount);
 	}
 	adjust();
 }
@@ -1125,6 +1165,10 @@ function toggleHide(value) {
 				// then redraw everything, SO IT NEEDS TO BECOME A PARTIAL... I can just refresh for now?
 				$('#form-'+selId).submit();
 				
+				
+				//need to delete the div now? because it will be replaced...
+			//	deletey(selId);
+				
 				removeClass(event.target, '-drop-over');
                 event.relatedTarget.textContent = event.target.getAttribute('data-pn') + ' '+ event.relatedTarget.getAttribute('data-mn');
 				
@@ -1205,8 +1249,8 @@ function closeBruh(){
 	$('#drops').animate({'top':'-300px'},500);
 }
 
-function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
-
+function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode,count,modeCount){
+	//alert(modeCount);
 	
 	//so I have to make THREE different modes. WHOLE, LEFT, and RIGHT.
 	//Right now, I'll pretend that what I have is for the WHOLE, even though it's the RIGHT (sort of)
@@ -1218,11 +1262,19 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 	var windowHeight = 600;
 	var artHeight = hyt;
 	
+	
 	//var density = 1;
 //	alert(slow=="");
 	
 
 	var numDown = Math.floor( (windowHeight / (density * artHeight)) );
+	
+	if ((count%2==0 && numDown>3)){
+	//	alert(mode+" - "+modeCount); // so, the mode count doesn't work. that's chill. it's because i'm ending up with duplicate DIVS when the toppings are 'edited' or 'updated' or whatever
+		windowHeight -= artHeight*density;
+		numDown = Math.floor( (windowHeight / (density * artHeight)) );
+	}
+	
 	var yoffset = (windowHeight % (density * artHeight)) / numDown;
 	// 575 - 50*2 ... 475
 	// 475 + 25/2 ... 487.5
@@ -1235,14 +1287,7 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 	
 	var altOffset = 500 - (artHeight/2);
 	
-	if(mode==1){
-		  //left
-		  var x = (-r * Math.sin(j*degree))*(windowHeight-artHeight)/windowHeight + altOffset - artHeight/2;
-	  }
-	  else if(mode==2){
-		  //right
-		  var x = artHeight/2 + (r * Math.sin(j*degree))*(windowHeight-artHeight)/windowHeight + altOffset;
-	  }
+
 	
 	
 	
@@ -1268,6 +1313,9 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 		
 	      if( i<numDown/2 ){
 	        var numNodes = Math.floor( ((numDown-(i*2)) * (Math.PI / 2)) ); 
+			if (mode!=0 && count%2==0 && numNodes>2){
+			//	numNodes--;
+			}
 			var jVal = numNodes;
 			if(mode==0){
 				//whole
@@ -1289,16 +1337,23 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 	          var r = Math.abs(targetY - originY)/2;
 	          var y = r * Math.cos(j*degree) + altOffset; // 225 number from illustator layout
 			  var x = r * Math.sin(j*degree) + altOffset; // area height is 575... PEPPERONI WAS HEIGHT 50...
-	          
+	          var dugree = j*degree;
+			  if(count%2==0 && numNodes>2){
+			//	dugree= j*degree + (degree/2);
+			  }
+			
 			  if(mode==1){
 				  //left
-				  var x = (-r * Math.sin(j*degree))*(windowHeight-artHeight)/windowHeight + altOffset - artHeight/2;
+				  var x = (-r * Math.sin(dugree))*(windowHeight-artHeight)/windowHeight + altOffset - artHeight/2;
 			  }
 			  else if(mode==2){
 				  //right
-				  var x = artHeight/2 + (r * Math.sin(j*degree))*(windowHeight-artHeight)/windowHeight + altOffset;
+				  var x = artHeight/2 + (r * Math.sin(dugree))*(windowHeight-artHeight)/windowHeight + altOffset;
 			  }
-			  
+			  else if(mode==0 && count!=1){
+		  			var y = r * Math.cos(j*degree-(Math.PI/(4+count-1))) + altOffset; // 225 number from illustator layout
+					  var x = r * Math.sin(j*degree-(Math.PI/(4+count-1))) + altOffset; //-PI/4
+			  }
 	          
 			  if(!isNaN(x)||!isNaN(y)){
 				
@@ -1335,14 +1390,23 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode){
 				scaleString = "' data-width='" + newSize + "' data-height='" + newSize;
 			}
 			
-			
-			
-				  $('#'+eyedee).append("<img class='tahp' src='"+file + scaleString + "' data-x='" + x + "' data-y='" + y + rotateString + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
+			/*
+			if(mode!=0 && count%2==0 && numDown>4){
+          //&& j!=numNodes-1
+			if(j!=numNodes-1){
+				 $('#'+eyedee).append("<img class='tahp' src='"+file + scaleString + "' data-x='" + x + "' data-y='" + y + rotateString + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
+				//if(widf=="75" && i==0 && j==0){
+				//	alert("pep");
+				//}
+			}
+			}
+			else{ */
+				 $('#'+eyedee).append("<img class='tahp' src='"+file + scaleString + "' data-x='" + x + "' data-y='" + y + rotateString + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
 				/*if(widf=="75" && i==0 && j==0){
 					alert("pep");
 				}*/
-			
-			
+		//	}
+
 			
 			}
 	         // ellipse(x,y+(windowHeight/2)-(artHeight/2),artHeight, artHeight);

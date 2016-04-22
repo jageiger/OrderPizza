@@ -1,1 +1,1 @@
-$("#toppins").append("<%= escape_javascript(render partial: "cart_items/toppin", locals: { s_mod: @selected_modifier }).html_safe %>");
+$("#toppins").append("<%= escape_javascript(render partial: "cart_items/toppin", locals: { s_mod: @selected_modifier, del: true }).html_safe %>");
