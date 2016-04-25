@@ -1,5 +1,5 @@
 <div class="tabbable tabbable-custom">
-	<ul class="nav nav-tabs">
+	<ul id="menuTab" class="nav nav-tabs">
 		<% first = true %>
 		<% @categories.each do |category| %>
 
@@ -9,7 +9,7 @@
 			<% else %>
 					<li>
 			<% end %>
-						<a href="#tab_<%= category.id %>" data-toggle="tab" onclick="<%= category.name.html_safe %>());return false;"> <%= category.name %></a>
+						<a href="#tab_<%= category.id %>" data-toggle="tab" onclick="<%= category.name.html_safe %>(); return false;$('#tab_<%= category.id %>').responsiveEqualHeightGrid();"> <%= category.name %></a>
 					</li>
 			<% first = false %>
 		<% end %>
@@ -29,6 +29,8 @@
 			<% else %>
 				<div class="tab-pane" id="tab_<%= category.id %>">
 			<% end %>
+			<script> $('.<%= category.name.html_safe %>-element').responsiveEqualHeightGrid(); </script>
+			
 					<div class="row">
 						<%# Count catz to see how many panels to render... some categories might not have many items and I want to fill the space on larger displays. Store in variable, and calculate which col# for xs, sm, md, and lg. Possibly use remainders to see the best way to fill the space... I don't want any gaps. T %>
 					<% catz.each_with_index do |cat, i| %>
