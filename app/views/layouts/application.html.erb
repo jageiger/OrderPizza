@@ -175,10 +175,10 @@ function toggleHide(value) {
 		
 		$.fn.responsiveTabs = function() {
 		  this.addClass('responsive-tabs');
-		  this.append($('<span class="glyphicon glyphicon-triangle-bottom"></span>'));
-		  this.append($('<span class="glyphicon glyphicon-triangle-top"></span>'));
+		  this.append($('<i class="fa fa-caret-down"></i>'));//caret-down
+		  this.append($('<i class="fa fa-caret-up"></i>'));//caret-up
 
-		  this.on('click', 'li.active > a, span.glyphicon', function() {
+		  this.on('click', 'li.active > a, i.fa', function() {
 		    this.toggleClass('open');
 		  }.bind(this));
 
