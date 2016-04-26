@@ -176,6 +176,40 @@
 			  
 			
 			<% end %>
+			
+			<% if(selected_mods.any?) %>
+			<b>Delete</b><br>	  			
+				<div id="cError"></div>
+				
+				<%  #
+		#		options_from_collection_for_select(selected_mods, value_method, text_method, selected = nil)
+		#		  options = selected_mods.map do |element|
+		#		    [value_for_collection(Modifier.find(element.modifier_id), 'name'), value_for_collection(element, 'id'), option_html_attributes(element)]
+		#		  end
+		#		  selected, disabled = extract_selected_and_disabled(selected)
+		#		  select_deselect = {
+		#		    selected: extract_values_from_collection(selected_mods, value_method, selected),
+		#		    disabled: extract_values_from_collection(selected_mods, value_method, disabled)
+		#		  }
+
+		#		  options_for_select(options, select_deselect)
+				
+				%>
+				
+				<% optionsYo = selected_mods.map do |element|
+				    [value_for_collection(Modifier.find(element.modifier_id), 'name'), value_for_collection(element, 'id'), value_for_collection(element, 'id')]
+				  end %>
+				
+				<%= select_tag "Test", options_for_select(optionsYo), :id => "#cSelect", prompt: "Delete Toppings", onchange: " if ( $( '#cSelect' ).val()=='' )
+	   { $('#cError').html('<p>Please do not try to select the placeholder.</p>'); } else { $.ajax({
+				    type: 'DELETE',
+				    url: '/selected_modifiers/'+$(this).val(),
+				    data: {dropform:1}
+				}); $('#cError').html(''); deletey($(this).val()); }", class: "form-control" %>
+
+			  
+			
+			<% end %>
 			</div></div>
 			
 			<% end %>

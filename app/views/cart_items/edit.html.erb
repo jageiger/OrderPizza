@@ -297,9 +297,16 @@
 			color: #fff;
 		}
 		
-		.display.hover {
+		.display:hover {
 		    background-color:#ddd;
 			color: #333;
+			
+		}
+		
+		.display.selected:hover {
+			background-color: #218f21;
+			color: #fff;
+			
 		}
 		
 		
@@ -330,8 +337,34 @@
 			background: #fbeebb;
 		}
 		
+		#opt-div{
+			background-color: #42bd41;
+			width:100%;
+			color:#fff;
+			text-align:center;
+		}
+		#opt-div:hover{
+			background-color: #218f21;
+			
+		}
+		.activator{
+			color:#fff;
+		}
+		.activator:hover{
+			color:#fff;
+		}
 		
+		.nounderline{text-decoration: none}
 		
+		a {
+		    color: inherit;
+		}
+		
+		a:hover {
+			color: none;
+		}
+		
+		a { text-decoration: none !important}
 		
 </style>
 
@@ -384,24 +417,24 @@
 							<%= image_tag("cheese.svg", alt: "Edit Entry", id: "cheese") %>
 						</div>
 
-						<div id="toppins" style="position:absolute;">
+						<div id="toppins" style="position:absolute;z-index:5;">
 
 							<% selected_mods.each_with_index do |sel, i| %>
 								<% mod = Modifier.find(sel.modifier_id) %>
-								<div id="tops-<%= sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= sel.applied_mod_group_id %>" data-count="<%= i+1 %>">
+								<div id="tops-<%= sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= sel.applied_mod_group_id %>" data-count="<%= i+1 %>" style="position:absolute;z-index:<%= (i+1)*10 %>;">
 								<!-- maybe useful :data => {:name => 'Stephen', .. } -->
 								<% image_tag "#{mod.file}", :class => "top-#{sel.id}", :style => "position:absolute" %>
 								</div>
 							<% end %>
 						</div>
-						<div style="position:absolute;">
-							<%= image_tag("whole.svg", alt: "Edit Entry", id: "whole-sel", style: "display:none;") %>
+						<div style="position:absolute;z-index:2147483647;">
+							<%= image_tag("whole.svg", alt: "Edit Entry", id: "whole-sel", style: "display:none;z-index:2147483647;") %>
 						</div>
-						<div style="position:absolute;">
-							<%= image_tag("left.svg", alt: "Edit Entry", id: "left-sel", style: "display:none;") %>
+						<div style="position:absolute;z-index:2147483647;">
+							<%= image_tag("left.svg", alt: "Edit Entry", id: "left-sel", style: "display:none;z-index:2147483647;") %>
 						</div>
-						<div style="position:absolute;">
-							<%= image_tag("right.svg", alt: "Edit Entry", id: "right-sel", style: "display:none;") %>
+						<div style="position:absolute;z-index:2147483647;">
+							<%= image_tag("right.svg", alt: "Edit Entry", id: "right-sel", style: "display:none;z-index:2147483647;") %>
 						</div>
 
 					</div>
@@ -421,7 +454,7 @@
 		<% end %>
 		
 		
-		<div id="opt-div" style="background-color: rgb(110, 110,225);width:100%;text-align:center;">
+		<div id="opt-div" onclick="" style="cursor: pointer;">
 			<a class="activator" id="activator">Options</a>
 		</div>	
 	</div>
@@ -500,7 +533,7 @@
 					<% collection_of_left_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div></a>
+						<a href="" data-remote="true" class="nounderline"><div id="mod-<%= mod.id %>" class="display nounderline" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text" style="text-decoration: none" class="nounderline"><%= mod.name %></span></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
@@ -548,7 +581,7 @@
 			<div style="padding:10px;">
 				
 				
-				<a class="boxclose" id="boxclose" onclick="closeBruh();">dismiss</a>
+				<a class="boxclose" id="boxclose" onclick="closeBruh();" style="float:right;"><i class="fa fa-times fa-lg" aria-hidden="true"></i></a><br>
 			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#aDropForm", :style=>"" }, validate: true) do |g| %>
 			<b>Meats</b><br>
 			  <% if(collection_of_left_options.any?) %>
@@ -634,7 +667,7 @@
 				  end %>
 				
 				<%= select_tag "Test", options_for_select(optionsYo), :id => "#cSelect", prompt: "Delete Toppings", onchange: " if ( $( '#cSelect' ).val()=='' )
-	   { $('#cError').html('<p>Please do not try to select the placeholder.</p>'); } else { $.ajax({
+	   { $('#cError').html('<p>Please do not try to select the placeholder.</p>'); } else { closeBruh(); $.ajax({
 				    type: 'DELETE',
 				    url: '/selected_modifiers/'+$(this).val(),
 				    data: {dropform:1}
@@ -1361,12 +1394,18 @@ function toggleHide(value) {
 				if(parent==whole){
 				//	alert("whole!");
 					document.getElementById("whole-sel").style.display = 'block';
+					event.relatedTarget.lastChild.textContent = 'Whole';
+	                
 				}
 				else if(parent==left){
-					document.getElementById("left-sel").style.display = 'block';					
+					document.getElementById("left-sel").style.display = 'block';
+					event.relatedTarget.lastChild.textContent = 'Left';
+	                					
 				}
 				else if(parent==right){
 					document.getElementById("right-sel").style.display = 'block';
+					event.relatedTarget.lastChild.textContent = 'Right';
+	                
 				}
 				
             })
@@ -1468,7 +1507,7 @@ function toggleHide(value) {
 
 function clicky(id){
 	//alert(id);
-	$('#mod-'+id+'-text').text("Loading...");
+	$('#mod-'+id+'-text').html("Loading... <i class='fa fa-spinner fa-spin fa-fw margin-bottom'></i><span class='sr-only'>Loading...</span>");
 	document.getElementById('mod_field').value=id;
 	// SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }.count * 25
 	document.getElementById('xpos_field').value=50;
@@ -1484,8 +1523,8 @@ function clicky(id){
 }
 
 function deletey(id){
-	$('#mod-'+id+'-text').text("Loading...");
-	$('#tops-'+id).remove();
+	$('#mod-'+id+'-text').html("Loading... <i class='fa fa-spinner fa-spin fa-fw margin-bottom'></i><span class='sr-only'>Loading...</span>");
+		$('#tops-'+id).remove();
 }
 
 function cleary(id){
@@ -1517,6 +1556,7 @@ function closeBruh(){
 
 function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode,count,modeCount){
 	//alert(modeCount);
+	//alert(count);
 	
 	//so I have to make THREE different modes. WHOLE, LEFT, and RIGHT.
 	//Right now, I'll pretend that what I have is for the WHOLE, even though it's the RIGHT (sort of)

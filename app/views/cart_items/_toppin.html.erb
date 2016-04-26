@@ -9,8 +9,16 @@ $('#tops-'+<%= @sel.id %>).remove();
 </script>
 <% end %>
 
+<% smods = SelectedModifier.all.select{ |t| t.cart_item_id == @sel.cart_item_id } %>
+<% numbah = 99 %>
 
-<div id="tops-<%= @sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= @sel.applied_mod_group_id %>" data-count="<%= SelectedModifier.all.select{ |t| t.cart_item_id == @sel.cart_item_id }.count %>">
+<% smods.each_with_index do |sel, i| %>
+	<% if sel == @sel %>
+		<% numbah = i %>
+	<% end %>
+<% end %>
+
+<div id="tops-<%= @sel.id %>" class="toppin" data-file="<%= mod.file %>" data-w="<%= mod.file_width %>" data-h="<%= mod.file_height %>" data-rotate="<%= mod.rotate %>" data-density="<%= mod.density %>" data-slow="<%= mod.scale_range_low %>" data-sigh="<%= mod.scale_range_high %>" data-parent="<%= @sel.applied_mod_group_id %>" data-count="<%= numbah + 1 %>" style="position:absolute;z-index:<%= (numbah+1)*10 %>;">
 <script>
 $('#tops-'+<%= @sel.id %>).data("parent",<%= @sel.applied_mod_group_id %>);
 cleary(<%= @sel.id %>);
