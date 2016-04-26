@@ -1,7 +1,6 @@
 $("#selected_modifiers").html("<%= escape_javascript(render partial: "cart_items/modifiers", locals: { s_mod: @selected_modifier }).html_safe %>");
 $("#modifier_groups").html("<%= escape_javascript(render partial: "cart_items/groups", locals: { s_mod: @selected_modifier }).html_safe %>");
-$("#draggies").html("<%= escape_javascript(render partial: "cart_items/draggables", locals: { s_mod: @selected_modifier }).html_safe %>");
-$("#columns").html("<%= escape_javascript(render partial: "cart_items/columns", locals: { s_mod: @selected_modifier }).html_safe %>");
+$("#draggies").html("<%= escape_javascript(render partial: "cart_items/draggables", locals: { s_mod: @selected_modifier, del:false }).html_safe %>");
 
 //first check if there is an existing div for that id? wait, no, it's split up with different methods (create won't have an existing div to replace!)
 //replace on edit

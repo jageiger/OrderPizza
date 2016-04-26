@@ -11,7 +11,7 @@
 		
 
 		
-		<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %><%# image_tag "#{mod.file}", :class => "" %>
+		<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" data-mid="<%= mod.id %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %><%# image_tag "#{mod.file}", :class => "" %>
 			<span class="draggable-art"><%= image_tag(mod.file, class: "draggable-art draggable-pic") %></span>
 			<span>
 		<% if grup.child %>
@@ -172,5 +172,18 @@
 	    });
 
 	}(window.interact));
+	
+	<% @modifier = Modifier.find(@ca.modifier_id) %>
+	
+	<% if del==false %>
+	
+	$('#mod-'+<%= @modifier.id %>).attr("onclick", "$.ajax({ type: 'DELETE', url: '/selected_modifiers/<%= @ca.id %>', data: {dropform:1} });deletey(<%= @ca.id %>);");
+	
+	<% end %>
+	
+	
+	rename(<%= @modifier.id %>);
+	
+	adjust();
 
 	</script>

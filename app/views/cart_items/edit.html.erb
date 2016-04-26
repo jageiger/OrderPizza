@@ -533,13 +533,13 @@
 					<% collection_of_left_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" class="nounderline"><div id="mod-<%= mod.id %>" class="display nounderline" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text" style="text-decoration: none" class="nounderline"><%= mod.name %></span></div></a>
+						<a href="" data-remote="true" class="nounderline"><div id="mod-<%= mod.id %>" class="display nounderline" onclick="clicky(<%= mod.id %>);" data-name="<%= mod.name %>"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text" style="text-decoration: none" class="nounderline"><%= mod.name %></span></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
+									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);" data-name="<%= mod.name %>"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -551,13 +551,13 @@
 					<% collection_of_right_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div></a>
+						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);" data-name="<%= mod.name %>"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
+									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);" data-name="<%= mod.name %>"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -701,7 +701,7 @@
 			
   	
 			
-			<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %><%# image_tag "#{mod.file}", :class => "" %>
+			<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" data-mid="<%= mod.id %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %><%# image_tag "#{mod.file}", :class => "" %>
 				<span class="draggable-art"><%= image_tag(mod.file, class: "draggable-art draggable-pic") %></span>
 				<span>
 			<% if grup.child %>
@@ -1505,9 +1505,13 @@ function toggleHide(value) {
 
 }(window.interact));
 
-function clicky(id){
+function clicky(id){ // here the id is a modifier id
 	//alert(id);
 	$('#mod-'+id+'-text').html("Loading... <i class='fa fa-spinner fa-spin fa-fw margin-bottom'></i><span class='sr-only'>Loading...</span>");
+	$('#mod-'+id).addClass('selected');
+//	$('#mod-'+id).click(function() { deletey(id); });
+	
+	
 	document.getElementById('mod_field').value=id;
 	// SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }.count * 25
 	document.getElementById('xpos_field').value=50;
@@ -1522,13 +1526,37 @@ function clicky(id){
 	$('#fancyForm').submit();
 }
 
-function deletey(id){
-	$('#mod-'+id+'-text').html("Loading... <i class='fa fa-spinner fa-spin fa-fw margin-bottom'></i><span class='sr-only'>Loading...</span>");
+function testThing(id){
+	var mid = $('#drag-'+id).data('mid');
+	
+	$('#mod-'+mid+'-text').html("Loading... <i class='fa fa-spinner fa-spin fa-fw margin-bottom'></i><span class='sr-only'>Loading...</span>");
+	$('#mod-'+mid).attr('onclick', 'clicky('+mid+');');
+	
+	$('#mod-'+mid).removeClass('selected');
+	//$('#mod-'+id).click(function() { clicky(id); });
+	$('#mod-'+mid).attr("onclick", "clicky("+mid+");");
+	$('#mod-'+mid).attr("onclick", "clicky("+mid+");");
+	
+	$('#mod-'+mid).attr("onclick", "clicky("+mid+");");
+	
+	
+}
+
+function deletey(id){ // here, the id is a selected modifier id
+	
+
 		$('#tops-'+id).remove();
+		testThing(id);
+		
+		
 }
 
 function cleary(id){
 	$('#tops-'+id).empty();
+}
+
+function rename(id){
+	$('#mod-'+id+'-text').text($('#mod-'+id).data('name'));	
 }
 
 
