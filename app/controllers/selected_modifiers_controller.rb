@@ -65,12 +65,20 @@ class SelectedModifiersController < ApplicationController
   # DELETE /selected_modifiers/1
   # DELETE /selected_modifiers/1.json
   def destroy
-    @selected_modifier.destroy
-    respond_to do |format|
-      format.html { redirect_to selected_modifiers_url, notice: 'Selected modifier was successfully destroyed.' }
-      format.json { head :no_content }
-      format.js   { render :layout => false }
-    end
+
+    unless params[:dropform]==1
+      @selected_modifier.destroy
+      respond_to do |format|
+        format.js
+      end
+    else
+      @selected_modifier.destroy
+      respond_to do |format|
+        format.html { redirect_to selected_modifiers_url, notice: 'Selected modifier was successfully destroyed.' }
+        format.json { head :no_content }
+        format.js   { render :layout => false }
+      end
+    end  
   end
 
   private

@@ -11,12 +11,14 @@
 		
 
 		
-		<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %>
+		<div id="drag-<%= sel.id %>" class="draggable js-drag" data-x="<%= sel.xpos %>" data-y="<%= sel.ypos %>" data-scrx="<%= sel.scrx %>" data-scry="<%= sel.scry %>" data-rapper="<%= sel.rapper %>" data-sel="<%= sel.id %>" data-mn="<%= mod.name %>" ><% grup = ModifierGroup.find(sel.applied_mod_group_id) %><%# image_tag "#{mod.file}", :class => "" %>
+			<span class="draggable-art"><%= image_tag(mod.file, class: "draggable-art draggable-pic") %></span>
+			<span>
 		<% if grup.child %>
 			<%= grup.prepend_name %> <%= mod.name %>
 		<% else %>
 			<%= mod.name %>
-		<% end %></div>
+		<% end %></span></div>
 		<!-- also need to ... give the user the instruction to drag it around (because it won't automatically be part of a group)
 		maybe it should say, instead of the topping name "Drag me!" and then change color and display the proper name at that point. -->
 		
@@ -102,11 +104,11 @@
 	            })
 	            .on('dragenter', function (event) {
 	                addClass(event.target, '-drop-over');
-	                event.relatedTarget.textContent = 'I\'m in';
+	                event.relatedTarget.lastChild.textContent = 'I\'m in';
 	            })
 	            .on('dragleave', function (event) {
 	                removeClass(event.target, '-drop-over');
-	                event.relatedTarget.textContent = 'Drag me…';
+	                event.relatedTarget.lastChild.textContent = 'Drag me…';
 	            })
 	            .on('drop', function (event) {
 
@@ -137,7 +139,7 @@
 					$('#form-'+selId).submit();
 
 					removeClass(event.target, '-drop-over');
-	                event.relatedTarget.textContent = event.target.getAttribute('data-pn') + ' '+ event.relatedTarget.getAttribute('data-mn');
+	                event.relatedTarget.lastChild.textContent = event.target.getAttribute('data-pn') + ' '+ event.relatedTarget.getAttribute('data-mn');
 
 	            });
 	    }

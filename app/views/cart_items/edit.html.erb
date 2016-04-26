@@ -421,7 +421,7 @@
 		<% end %>
 		
 		
-		<div id="opt-div" style="background-color: rgb(110, 110,225);width:100%">
+		<div id="opt-div" style="background-color: rgb(110, 110,225);width:100%;text-align:center;">
 			<a class="activator" id="activator">Options</a>
 		</div>	
 	</div>
@@ -500,13 +500,13 @@
 					<% collection_of_left_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div></a>
+						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -518,13 +518,13 @@
 					<% collection_of_right_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div></a>
+						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -599,13 +599,47 @@
 	
 				<% else %>
 				
-				<div id="aError"></div>
+				<div id="bError"></div>
 
 				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_right_options, 'id', 'name'), { :prompt => "All Veggies selected." }, :id => "#bSelect", :disabled => "disabled", onchange: " if ( $( '#bSelect' ).val()=='' )
 	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $( this ).trigger('submit.rails'); $('#bError').html(''); }", class: "form-control" %>
 
 				<% end %>
 				
+			  
+			
+			<% end %>
+			
+			<% if(selected_mods.any?) %>
+			<b>Delete</b><br>	  			
+				<div id="cError"></div>
+				
+				<%  #
+		#		options_from_collection_for_select(selected_mods, value_method, text_method, selected = nil)
+		#		  options = selected_mods.map do |element|
+		#		    [value_for_collection(Modifier.find(element.modifier_id), 'name'), value_for_collection(element, 'id'), option_html_attributes(element)]
+		#		  end
+		#		  selected, disabled = extract_selected_and_disabled(selected)
+		#		  select_deselect = {
+		#		    selected: extract_values_from_collection(selected_mods, value_method, selected),
+		#		    disabled: extract_values_from_collection(selected_mods, value_method, disabled)
+		#		  }
+
+		#		  options_for_select(options, select_deselect)
+				
+				%>
+				
+				<% optionsYo = selected_mods.map do |element|
+				    [value_for_collection(Modifier.find(element.modifier_id), 'name'), value_for_collection(element, 'id'), value_for_collection(element, 'id')]
+				  end %>
+				
+				<%= select_tag "Test", options_for_select(optionsYo), :id => "#cSelect", prompt: "Delete Toppings", onchange: " if ( $( '#cSelect' ).val()=='' )
+	   { $('#cError').html('<p>Please do not try to select the placeholder.</p>'); } else { $.ajax({
+				    type: 'DELETE',
+				    url: '/selected_modifiers/'+$(this).val(),
+				    data: {dropform:1}
+				}); $('#cError').html(''); deletey($(this).val()); }", class: "form-control" %>
+
 			  
 			
 			<% end %>
@@ -669,6 +703,13 @@ var footer;
 var orig;
 
 //width around 991 or 992?
+
+
+(function () {
+		var height = $('#drops').height();
+	    $('#drops').css('top', -(height+200) );
+
+})();
 
 var offset = 85; //34 pixels is the arbitrary offset I've used for the navbar, but that's on top of any additional padding
 // 60 + 15, maybe? I can't recall.
@@ -763,38 +804,39 @@ function getSpecificTop(id){
 	
 
 
-	var file = $('#tops-'+id).data("file");
-	var widf = $('#tops-'+id).data("w");
-	var hyt = $('#tops-'+id).data("h");
-	var rotate = $('#tops-'+id).data("rotate");
-	var density = $('#tops-'+id).data("density");
-	var slow = $('#tops-'+id).data("slow");
-	var sigh = $('#tops-'+id).data("sigh");
-	var parent = $('#tops-'+id).data("parent");
-	var count = $('#tops-'+id).data("count");
+	var fileSpecific = $('#tops-'+id).data("file");
+	var widfSpecific = $('#tops-'+id).data("w");
+	var hytSpecific = $('#tops-'+id).data("h");
+	var rotateSpecific = $('#tops-'+id).data("rotate");
+	var densitySpecific = $('#tops-'+id).data("density");
+	var slowSpecific = $('#tops-'+id).data("slow");
+	var sighSpecific = $('#tops-'+id).data("sigh");
+	var parentSpecific = $('#tops-'+id).data("parent");
+	var countSpecific = $('#tops-'+id).data("count");
 
-	var eyedee = "";
-	eyedee = "tops-"+id;
+	var eyedeeSpecific = "";
+	eyedeeSpecific = "tops-"+id;
 //	alert(rotate==true);
 	
-	if(parent==whole){
+	if(parentSpecific==whole){
 		//alert("working so far");
-		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,0,count,wholeModeCount);
+			populate(eyedeeSpecific,fileSpecific,widfSpecific,hytSpecific,rotateSpecific,densitySpecific,slowSpecific,sighSpecific,0,countSpecific,wholeModeCount);
 	//	alert("broken?");
 	
 
 	}
-	else if(parent==left){
+	else if(parentSpecific==left){
 	//	alert("left!");
-		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,1,count,leftModeCount);
+		populate(eyedeeSpecific,fileSpecific,widfSpecific,hytSpecific,rotateSpecific,densitySpecific,slowSpecific,sighSpecific,1,countSpecific,leftModeCount);
 		
 	}
-	else if(parent==right){
+	else if(parentSpecific==right){
 	//	alert("rrr!");
-		populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,2,count,rightModeCount);
+		populate(eyedeeSpecific,fileSpecific,widfSpecific,hytSpecific,rotateSpecific,densitySpecific,slowSpecific,sighSpecific,2,countSpecific,rightModeCount);
 	}
 	adjust();
 }
+
 
 getTops();
 
@@ -834,7 +876,7 @@ adjust = function() {
 			elements[i].style.width(totalHeight / 3);
 		}*/
 
-		$('.draggable').css('height',totalHeight / 15);
+		$('.draggable').css('height',(totalHeight / 15)-1);
 		$('.draggable').css('width',totalHeight / 3);
 		
 		$('.draggable').css('font-size',totalHeight / 50);
@@ -926,6 +968,10 @@ document.getElementById("activator").style.display = 'none';
 	$('.draggable-pic').width($('.draggable:first').height()*1.3);
 	$('.draggable-art').css('margin-top', ( ($('.draggable:first').height() - $('.draggable-art:first').height())/2));
 	$('.draggable-pic').css('margin', ($('.draggable-art:first').height() - $('.draggable-pic:first').height())/2);
+	
+	$('.activator').css('padding-top', Math.abs(( ($('#opt-div').height() - $('#activator').height())/2)));
+	//alert($('.activator').height());
+	
 	
 	// need to display ALTERNATIVE to columns when the screen is too small for columns.
 	// if width is less than certain number
@@ -1422,6 +1468,7 @@ function toggleHide(value) {
 
 function clicky(id){
 	//alert(id);
+	$('#mod-'+id+'-text').text("Loading...");
 	document.getElementById('mod_field').value=id;
 	// SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }.count * 25
 	document.getElementById('xpos_field').value=50;
@@ -1437,6 +1484,7 @@ function clicky(id){
 }
 
 function deletey(id){
+	$('#mod-'+id+'-text').text("Loading...");
 	$('#tops-'+id).remove();
 }
 
@@ -1456,13 +1504,15 @@ $(function() {
 					$('#drops').animate({'top':'-22px'},500);
                 });
                 $('#boxclose').click(function(){
-                    $('#drops').animate({'top':'-300px'},500);
+					var height = $('#drops').height();
+                    $('#drops').animate({'top':'-'+ (height+200) +'px'},(height+500));
                 });
 
             });
 
 function closeBruh(){
-	$('#drops').animate({'top':'-300px'},500);
+	var height = $('#drops').height();
+    $('#drops').animate({'top':'-'+ (height+200) +'px'},(height+500));
 }
 
 function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode,count,modeCount){

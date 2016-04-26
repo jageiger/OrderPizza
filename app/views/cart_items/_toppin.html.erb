@@ -3,7 +3,9 @@
 
 <% if del %>
 <script id="delete-me-<%= @sel.id %>">
-deletey(<%= @sel.id %>);
+
+$('#tops-'+<%= @sel.id %>).remove();
+
 </script>
 <% end %>
 
@@ -16,6 +18,7 @@ $('#delete-me-'+<%= @sel.id %>).remove();
 
 getSpecificTop(<%= @sel.id %>);
 artRots();
+//adjust();
 
 
 //some populate variant</script>

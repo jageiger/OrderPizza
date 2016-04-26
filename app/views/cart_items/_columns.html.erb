@@ -67,13 +67,13 @@
 					<% collection_of_left_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div></a>
+						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
@@ -85,13 +85,13 @@
 					<% collection_of_right_mods.each do |mod| %>
 				
 						<% if selected_mods.select{|t| t.modifier_id == mod.id }.empty? %>
-						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div></a>
+						<a href="" data-remote="true" ><div id="mod-<%= mod.id %>" class="display" onclick="clicky(<%= mod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div></a>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						
 						<% else %>
 						<% smod = selected_mods.select{|t| t.modifier_id == mod.id }.first %>
 										<%= link_to selected_modifier_path(smod), method: :delete, remote: true do %>
-									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><%= mod.name %></div>
+									<div id="mod-<%= mod.id %>" class="display selected" onclick="deletey(<%= smod.id %>);"><span class="panel-art"><%= image_tag(mod.file, alt: "Edit Entry", class: "panel-art panel-pic") %></span><span id="mod-<%= mod.id %>-text"><%= mod.name %></span></div>
 								<% end %>
 						<%# check to see if it exists in the collection of selected_mods, if it does, just change the class that it is to display it in a different color or something. %>
 						<% end %>
