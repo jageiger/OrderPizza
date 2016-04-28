@@ -66,13 +66,36 @@
 	     * @param {HTMLElement|String} el
 	     * @param {String} accept
 	     */
-	    function setupDropzone(el, accept) {
+		function setupDropzone(el, accept) {
 	        interact(el)
 	            .dropzone({
 	                accept: accept,
 	                ondropactivate: function (event) {
 	                    addClass(event.relatedTarget, '-drop-possible');
 						//send form
+
+						/*
+						var totalHeight = parseInt($(window).height());
+
+						if(parseInt($(window).width())-30 > (html.clientHeight-offset) ){ 
+							totalHeight = parseInt($(window).height()) - offset;
+							if (parseInt($(window).width()) < 850 ){
+								totalHeight = totalHeight * 0.9;
+							}
+						}
+						else if(parseInt($(window).width())-30 < (html.clientHeight-offset) ){
+							totalHeight = parseInt($(window).width()) -30;
+							if (parseInt($(window).width()) < 850 ){
+								totalHeight = totalHeight * 0.9;
+							}
+						}
+
+						event.relatedTarget.css('height',totalHeight / 15);
+
+
+						*/
+
+
 	                },
 	                ondropdeactivate: function (event) {
 	                    removeClass(event.relatedTarget, '-drop-possible');
@@ -86,6 +109,27 @@
 	                if (active === 0) {
 	                    addClass(event.target, '-drop-possible');
 	                    //event.target.textContent = 'Drop me here!';
+
+
+						var totalHeight = parseInt($(window).height());
+
+						if(parseInt($(window).width())-30 > (html.clientHeight-offset) ){ 
+							totalHeight = parseInt($(window).height()) - offset;
+							if (parseInt($(window).width()) < 850 ){
+								totalHeight = totalHeight * 0.9;
+							}
+						}
+						else if(parseInt($(window).width())-30 < (html.clientHeight-offset) ){
+							totalHeight = parseInt($(window).width()) -30;
+							if (parseInt($(window).width()) < 850 ){
+								totalHeight = totalHeight * 0.9;
+							}
+						}
+
+					//	event.relatedTarget.css('height');
+
+
+
 	                }
 
 	                event.target.setAttribute('active', active + 1);
@@ -100,17 +144,85 @@
 	                    //event.target.textContent = 'Dropzone';
 	                }
 
+
+
+
 	                event.target.setAttribute('active', active - 1);
 	            })
 	            .on('dragenter', function (event) {
 	                addClass(event.target, '-drop-over');
 	                event.relatedTarget.lastChild.textContent = 'I\'m in';
+					removeClass(event.relatedTarget, '-delete');
+
+					//show appropriate bg
+
+
+					var whole = $('#whole').data('gid');
+					var left = $('#left').data('gid');
+					var right = $('#right').data('gid');
+	//				var parent  = $('#tops-'+event.relatedTarget.getAttribute('data-sel')).data('parent');
+					var parent  = event.target.getAttribute('data-gid');
+
+
+				//	alert(parent+" - "+whole);
+					if(parent==whole){
+					//	alert("whole!");
+						document.getElementById("whole-sel").style.display = 'block';
+						event.relatedTarget.lastChild.textContent = 'Whole';
+
+
+					}
+					else if(parent==left){
+						document.getElementById("left-sel").style.display = 'block';
+						event.relatedTarget.lastChild.textContent = 'Left';
+
+					}
+					else if(parent==right){
+						document.getElementById("right-sel").style.display = 'block';
+						event.relatedTarget.lastChild.textContent = 'Right';
+
+					}
+					event.relatedTarget.setAttribute('data-gid', parent);
+
+
 	            })
 	            .on('dragleave', function (event) {
 	                removeClass(event.target, '-drop-over');
-	                event.relatedTarget.lastChild.textContent = 'Drag me…';
+	                event.relatedTarget.lastChild.textContent = 'Delete';
+					addClass(event.relatedTarget, '-delete');
+
+
+					//hide bg
+						var whole = $('#whole').data('gid');
+						var left = $('#left').data('gid');
+						var right = $('#right').data('gid');
+						var parent  = event.target.getAttribute('data-gid');
+
+
+
+					//	alert(parent+" - "+whole);
+						if(parent==whole){
+						//	alert("whole!");
+							document.getElementById("whole-sel").style.display = 'none';
+						}
+						else if(parent==left){
+							document.getElementById("left-sel").style.display = 'none';					
+						}
+						else if(parent==right){
+							document.getElementById("right-sel").style.display = 'none';
+						}
+						event.relatedTarget.setAttribute('data-gid', -1);
+
+
 	            })
 	            .on('drop', function (event) {
+	                //hide ALL bgs
+					document.getElementById("whole-sel").style.display = 'none';
+
+					document.getElementById("left-sel").style.display = 'none';		
+					document.getElementById("right-sel").style.display = 'none';
+
+
 
 					// now how do I determine which dropzone it is? left right or whole?
 
@@ -118,6 +230,7 @@
 					//alert(event.interaction.x);
 
 					var selId = event.relatedTarget.getAttribute('data-sel');
+
 
 					//alert(event.target.getAttribute('data-gid'));
 
@@ -137,6 +250,10 @@
 					// get form by id... then submit...
 					// then redraw everything, SO IT NEEDS TO BECOME A PARTIAL... I can just refresh for now?
 					$('#form-'+selId).submit();
+
+
+					//need to delete the div now? because it will be replaced...
+				//	deletey(selId);
 
 					removeClass(event.target, '-drop-over');
 	                event.relatedTarget.lastChild.textContent = event.target.getAttribute('data-pn') + ' '+ event.relatedTarget.getAttribute('data-mn');

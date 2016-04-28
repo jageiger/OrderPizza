@@ -269,6 +269,8 @@
 		}
 		
 		.draggable.-drop-possible { background-color: #29e; }
+		
+		.draggable.-delete { background-color: #ee3333; }
 
 		.display {
 		    position: relative;
@@ -1278,6 +1280,19 @@ function toggleHide(value) {
             event.target.setAttribute('data-scry', parseInt($(window).height()));
 			event.target.setAttribute('data-rapper', parseInt($('#rapper').width()));
 			
+			
+			var parent  = event.target.getAttribute('data-gid');
+			// need to have the attribute on the draggable...
+			if (parent == -1){
+				var sel = event.target.getAttribute('data-sel');
+				$.ajax({
+							    type: 'DELETE',
+							    url: '/selected_modifiers/'+sel,
+							    data: {dropform:1}
+				});
+				deletey(sel);
+			}
+			
         });
 
     // setup drop areas.
@@ -1376,11 +1391,16 @@ function toggleHide(value) {
                     //event.target.textContent = 'Dropzone';
                 }
 
+				
+
+
                 event.target.setAttribute('active', active - 1);
             })
             .on('dragenter', function (event) {
                 addClass(event.target, '-drop-over');
                 event.relatedTarget.lastChild.textContent = 'I\'m in';
+				removeClass(event.relatedTarget, '-delete');
+				
 				//show appropriate bg
 				
 				
@@ -1396,6 +1416,7 @@ function toggleHide(value) {
 				//	alert("whole!");
 					document.getElementById("whole-sel").style.display = 'block';
 					event.relatedTarget.lastChild.textContent = 'Whole';
+
 	                
 				}
 				else if(parent==left){
@@ -1408,16 +1429,23 @@ function toggleHide(value) {
 					event.relatedTarget.lastChild.textContent = 'Right';
 	                
 				}
+				event.relatedTarget.setAttribute('data-gid', parent);
+				
 				
             })
             .on('dragleave', function (event) {
                 removeClass(event.target, '-drop-over');
-                event.relatedTarget.lastChild.textContent = 'Drag me…';
+                event.relatedTarget.lastChild.textContent = 'Delete';
+				addClass(event.relatedTarget, '-delete');
+                
+				
 				//hide bg
 					var whole = $('#whole').data('gid');
 					var left = $('#left').data('gid');
 					var right = $('#right').data('gid');
 					var parent  = event.target.getAttribute('data-gid');
+					
+					
 
 				//	alert(parent+" - "+whole);
 					if(parent==whole){
@@ -1430,6 +1458,8 @@ function toggleHide(value) {
 					else if(parent==right){
 						document.getElementById("right-sel").style.display = 'none';
 					}
+					event.relatedTarget.setAttribute('data-gid', -1);
+					
 				
             })
             .on('drop', function (event) {
@@ -1447,6 +1477,7 @@ function toggleHide(value) {
 				//alert(event.interaction.x);
 			
 				var selId = event.relatedTarget.getAttribute('data-sel');
+				
 				
 				//alert(event.target.getAttribute('data-gid'));
 
