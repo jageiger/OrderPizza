@@ -5,6 +5,22 @@
 	 width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
 <g>
 	
-		<ellipse transform="matrix(0.8226 0.5686 -0.5686 0.8226 18.6477 -9.7799)" fill="#775722" cx="25" cy="25" rx="22.073" ry="26.276"/>
+		<ellipse transform="matrix(0.5686 -0.8226 0.8226 0.5686 -9.7815 31.3485)" fill="#775722" cx="24.998" cy="25" rx="26.276" ry="22.072"/>
 </g>
+<circle fill="#B59261" cx="16.812" cy="10.062" r="1.688"/>
+<circle fill="#B59261" cx="20.938" cy="39.562" r="0.688"/>
+<circle fill="#B59261" cx="40.125" cy="17.5" r="1"/>
+<circle fill="#B59261" cx="8.625" cy="27.625" r="0.625"/>
+<circle fill="#B59261" cx="31.375" cy="26.5" r="0.5"/>
+<circle fill="#56380D" cx="30.438" cy="13.938" r="0.938"/>
+<circle fill="#56380D" cx="15" cy="22.5" r="1.125"/>
+<circle fill="#56380D" cx="13.188" cy="40.938" r="0.688"/>
+<ellipse fill="#56380D" cx="35.062" cy="35.125" rx="0.812" ry="0.875"/>
+<circle fill="#56380D" cx="44.438" cy="23.062" r="0.562"/>
+<circle fill="#56380D" cx="32.688" cy="4.562" r="0.438"/>
+<circle fill="#301E05" cx="23.969" cy="17.344" r="0.844"/>
+<circle fill="#301E05" cx="8.562" cy="36.188" r="0.562"/>
+<circle fill="#301E05" cx="42.438" cy="31.062" r="0.438"/>
+<circle fill="#56380D" cx="26.458" cy="33.791" r="0.458"/>
+<circle fill="#56380D" cx="28.375" cy="44.375" r="0.542"/>
 </svg>

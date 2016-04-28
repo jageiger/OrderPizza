@@ -11,3 +11,6 @@ $("#draggies").html("<%= escape_javascript(render partial: "cart_items/draggable
 // create, I want to first append the div? IDK how I want to do this...
 
 $("#toppins").append("<%= escape_javascript(render partial: "cart_items/toppin", locals: { s_mod: @selected_modifier, del: false }).html_safe %>");
+
+$("#drops").html("<%= escape_javascript(render partial: "cart_items/drops", locals: { s_mod: @selected_modifier }).html_safe %>");
+

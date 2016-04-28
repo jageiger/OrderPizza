@@ -1,0 +1,158 @@
+<% @ca = s_mod %>
+
+	<% @cart_item = CartItem.find(@ca.cart_item_id) %>
+	
+	<% options = AppliedModGroup.all.select{ |t| t.item_id == @cart_item.item_id } %>
+<%# selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @ca.cart_item_id }%>
+	
+		<% collection_of_left_mods = [] %>
+		<% collection_of_right_mods = [] %>
+		<% collection_of_left_options = [] %>
+		<% collection_of_right_options = [] %>
+		
+		<% selected_mods = SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id }%>
+		
+		<% options.each do |applied_mod_group| %>
+			<%# This actually isn't very good. What about the possibility someone assigns multiple mod_groups with interface_position of one? Then I have overlapping columns, and multiple forms with the same ID. I need a COLUMN_MODS attribute on the CART_ITEM and look ip up that way. This is something I will have to do eventually. %>
+			<% modifier_groups = ModifierGroup.all.select{ |t| t.id == applied_mod_group.modifier_group_id && t.interface_position == 1}%>
+
+			<% modifier_groups.each do |modifier_group| %>
+				<% if modifier_group.child %>
+					<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.parent_modifier_group_id }%>
+				<% else %>
+					<% grouped_modifiers = GroupedModifier.all.select{ |t| t.modifier_group_id == modifier_group.id }%>
+				<% end %>
+				
+				<% grouped_modifiers.each do |grouped_modifer| %>
+					<% modifier = Modifier.find(grouped_modifer.modifier_id) %>
+					
+					<% unless ( modifier_group.prevent_incest && (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id}.any?) ) || (SelectedModifier.all.select{ |t| t.cart_item_id == @cart_item.id && t.modifier_id == modifier.id }.any?) %>
+						<% if modifier.interface_column == 1 %>
+							<% collection_of_left_options.push modifier %>
+						<% elsif modifier.interface_column == 2 %>
+							<% collection_of_right_options.push modifier %>
+						<% end %>
+
+						
+					<% end %>
+					<% if modifier.interface_column == 1 %>
+						<% collection_of_left_mods.push modifier %>
+					<% elsif modifier.interface_column == 2 %>
+						<% collection_of_right_mods.push modifier %>
+					<% end %>
+				<% end %>
+			
+			
+			
+			<% selected_mod_drop = SelectedModifier.new %>
+			
+			
+			<div style="padding:10px;">
+				
+				
+				<a class="boxclose" id="boxclose" onclick="closeBruh();" style="float:right;"><i class="fa fa-times fa-lg" aria-hidden="true"></i></a><br>
+			<%= form_for(selected_mod_drop, :remote => true, :html=>{:id=>"#aDropForm", :style=>"" }, validate: true) do |g| %>
+			<b>Meats</b><br>
+			  <% if(collection_of_left_options.any?) %>
+	  			<%= g.hidden_field :authenticity_token, :value => form_authenticity_token %>
+				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
+				
+				<%= g.hidden_field :xpos, :value => 50 %>
+				<%= g.hidden_field :ypos, :value => 10 %>
+				<%= g.hidden_field :scrx, :value => 150 %>
+				<%= g.hidden_field :scry, :value => 150 %>
+				<%= g.hidden_field :rapper, :value => 100 %>
+				<div id="aError"></div>
+					<%= g.submit nil, :class => 'btn btn-primary', :name => 'updateA', :style => 'display:none;' %>
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_left_options, 'id', 'name'), { :prompt => "Select Meats" }, :id => "#aSelect", onchange: " if ( $( '#aSelect' ).val()=='' )
+	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>');} else { $( this ).trigger('submit.rails'); $('#aError').html(''); }", class: "form-control" %>
+
+	
+				<% else %>
+				
+				<div id="aError"></div>
+
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_left_options, 'id', 'name'), { :prompt => "All Meats selected." }, :id => "#aSelect", :disabled => "disabled", onchange: " if ( $( '#aSelect' ).val()=='' )
+	   { $('#aError').html('<p>Please do not try to select the placeholder.</p>'); } else { $( this ).trigger('submit.rails'); $('#aError').html(''); }", class: "form-control" %>
+
+				<% end %>
+				
+			  
+			
+			<% end %>
+			<% selected_mod_drop_two = SelectedModifier.new %>
+			<%= form_for(selected_mod_drop_two, :remote => true, :html=>{:id=>"#bDropForm", :style=>"" }, validate: true) do |g| %>
+			<b>Veggies</b><br>
+			  <% if(collection_of_right_options.any?) %>
+	  			
+				<%= g.hidden_field :cart_item_id, :value => @cart_item.id %>
+				<%= g.hidden_field :applied_mod_group_id, :value => modifier_group.id %>
+				
+				<%= g.hidden_field :xpos, :value => 50 %>
+				<%= g.hidden_field :ypos, :value => 10 %>
+				<%= g.hidden_field :scrx, :value => 150 %>
+				<%= g.hidden_field :scry, :value => 150 %>
+				<%= g.hidden_field :rapper, :value => 100 %>
+				<div id="bError"></div>
+				<%= g.submit nil, :class => 'btn btn-primary', :name => 'updateB', :style => 'display:none;' %>
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_right_options, 'id', 'name'), { :prompt => "Select Veggies" }, :id => "#bSelect", onchange: " if ( $( '#bSelect' ).val()=='' )
+	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $( this ).trigger('submit.rails'); $('#bError').html(''); }", class: "form-control" %>
+	
+				<% else %>
+				
+				<div id="aError"></div>
+
+				<%= g.select :modifier_id, options_from_collection_for_select(collection_of_right_options, 'id', 'name'), { :prompt => "All Veggies selected." }, :id => "#bSelect", :disabled => "disabled", onchange: " if ( $( '#bSelect' ).val()=='' )
+	   { $('#bError').html('<p>Please do not try to select the placeholder.</p>'); } else { $( this ).trigger('submit.rails'); $('#bError').html(''); }", class: "form-control" %>
+
+				<% end %>
+				
+			  
+			
+			<% end %>
+			
+			<% if(selected_mods.any?) %>
+			<b>Delete</b><br>	  			
+				<div id="cError"></div>
+				
+				<%  #
+		#		options_from_collection_for_select(selected_mods, value_method, text_method, selected = nil)
+		#		  options = selected_mods.map do |element|
+		#		    [value_for_collection(Modifier.find(element.modifier_id), 'name'), value_for_collection(element, 'id'), option_html_attributes(element)]
+		#		  end
+		#		  selected, disabled = extract_selected_and_disabled(selected)
+		#		  select_deselect = {
+		#		    selected: extract_values_from_collection(selected_mods, value_method, selected),
+		#		    disabled: extract_values_from_collection(selected_mods, value_method, disabled)
+		#		  }
+
+		#		  options_for_select(options, select_deselect)
+				
+				%>
+				
+				<% optionsYo = selected_mods.map do |element|
+				    [value_for_collection(Modifier.find(element.modifier_id), 'name'), value_for_collection(element, 'id'), value_for_collection(element, 'id')]
+				  end %>
+				
+				<%= select_tag "Test", options_for_select(optionsYo), :id => "#cSelect", prompt: "Delete Toppings", onchange: " if ( $( '#cSelect' ).val()=='' )
+	   { $('#cError').html('<p>Please do not try to select the placeholder.</p>'); } else { $.ajax({
+				    type: 'DELETE',
+				    url: '/selected_modifiers/'+$(this).val(),
+				    data: {dropform:1}
+				}); $('#cError').html(''); deletey($(this).val()); }", class: "form-control" %>
+
+			  
+			
+			<% end %>
+			</div>
+			
+			<% end %>
+			
+			
+		<% end %>
+	
+		<%# selected modifiers, for each create a draggable %>
+		
+		<script> adjust(); </script>
+		
