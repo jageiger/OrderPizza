@@ -1744,8 +1744,9 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode,count,modeC
 		//	if(i==0 && j==0){
 		//		alert(rotate==true);
 		//	}
+		    var degri=0;
 			if(rotate=="true" || rotate==true){
-				var degri = Math.floor(Math.random() * (360));
+				degri = Math.floor(Math.random() * (360));
 			    rotateString = "' data-rotate='"+ degri;
 			
 				
@@ -1767,7 +1768,7 @@ function populate(eyedee,file,widf,hyt,rotate,density,slow,sigh,mode,count,modeC
 			}
 			}
 			else{ */
-				 $('#'+eyedee).append("<img class='tahp' src='"+file + scaleString + "' data-x='" + x + "' data-y='" + y + rotateString + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='position:absolute;' ></img>");
+				 $('#'+eyedee).append("<img class='tahp' src='"+file + scaleString + "' data-x='" + x + "' data-y='" + y + rotateString + "' data-scrx='1000' data-scry='1500' data-rapper='1000' style='-webkit-transform: rotate("+ degri +"deg);-moz-transform: rotate("+ degri +"deg);-o-transform: rotate("+ degri +"deg);-ms-transform: rotate("+ degri +"deg);transform: rotate("+ degri +"deg);position:absolute;'></img>");
 				/*if(widf=="75" && i==0 && j==0){
 					alert("pep");
 				}*/
@@ -1813,7 +1814,7 @@ function artRots() {$('img').each(function() {
     });
 });
 }
-artRots();
+//artRots();
 </script>
 
 <% else %>
